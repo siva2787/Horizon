@@ -134,18 +134,16 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({
               ].map((s) => (
                 <div key={s.num} className="flex items-center gap-2">
                   <div
-                    className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-black transition-all ${
-                      step >= s.num
+                    className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-black transition-all ${step >= s.num
                         ? 'bg-indigo-600 text-white ring-4 ring-indigo-100 shadow-xs'
                         : 'bg-slate-100 text-slate-400 border border-slate-200'
-                    }`}
+                      }`}
                   >
                     {step > s.num ? <Check className="w-3.5 h-3.5" /> : s.num}
                   </div>
                   <span
-                    className={`text-xs font-bold hidden sm:inline ${
-                      step >= s.num ? 'text-slate-900' : 'text-slate-400'
-                    }`}
+                    className={`text-xs font-bold hidden sm:inline ${step >= s.num ? 'text-slate-900' : 'text-slate-400'
+                      }`}
                   >
                     {s.label}
                   </span>
@@ -250,20 +248,18 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({
                             setSelectedSubjects([...selectedSubjects, sub.name]);
                           }
                         }}
-                        className={`p-3.5 rounded-2xl border text-xs cursor-pointer flex items-center justify-between transition-all ${
-                          isSelected
+                        className={`p-3.5 rounded-2xl border text-xs cursor-pointer flex items-center justify-between transition-all ${isSelected
                             ? 'bg-indigo-50/90 border-indigo-500 text-indigo-950 shadow-xs ring-2 ring-indigo-500/20'
                             : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-white'
-                        }`}
+                          }`}
                       >
                         <div>
                           <div className="font-bold text-sm text-slate-900">{sub.name}</div>
                           <div className="text-[11px] text-slate-500 mt-0.5">{sub.concepts} • {sub.tag}</div>
                         </div>
                         <div
-                          className={`w-5 h-5 rounded-full flex items-center justify-center transition-all ${
-                            isSelected ? 'bg-indigo-600 text-white' : 'border border-slate-300 text-transparent'
-                          }`}
+                          className={`w-5 h-5 rounded-full flex items-center justify-center transition-all ${isSelected ? 'bg-indigo-600 text-white' : 'border border-slate-300 text-transparent'
+                            }`}
                         >
                           <Check className="w-3 h-3" />
                         </div>
@@ -312,11 +308,10 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({
                     <div
                       key={item.mode}
                       onClick={() => setLearningMode(item.mode as any)}
-                      className={`p-4 rounded-2xl border cursor-pointer transition-all flex flex-col justify-between ${
-                        learningMode === item.mode
+                      className={`p-4 rounded-2xl border cursor-pointer transition-all flex flex-col justify-between ${learningMode === item.mode
                           ? 'bg-indigo-50/90 border-indigo-500 text-indigo-950 ring-2 ring-indigo-500/20 shadow-xs'
                           : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-white'
-                      }`}
+                        }`}
                     >
                       <div>
                         <div className="text-xs font-black uppercase tracking-wider text-indigo-600 mb-1">
@@ -359,11 +354,10 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({
                     <div
                       key={goal}
                       onClick={() => setPrimaryGoal(goal)}
-                      className={`p-3.5 rounded-2xl border text-xs font-bold cursor-pointer flex items-center justify-between transition-all ${
-                        primaryGoal === goal
+                      className={`p-3.5 rounded-2xl border text-xs font-bold cursor-pointer flex items-center justify-between transition-all ${primaryGoal === goal
                           ? 'bg-purple-50/90 border-purple-500 text-purple-950 shadow-xs ring-2 ring-purple-500/20'
                           : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-white'
-                      }`}
+                        }`}
                     >
                       <span>{goal}</span>
                       {primaryGoal === goal && <Check className="w-4 h-4 text-purple-600" />}
@@ -381,11 +375,10 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({
                         key={mins}
                         type="button"
                         onClick={() => setDailyTimeMinutes(mins)}
-                        className={`flex-1 py-2 rounded-xl text-xs font-bold border transition-all ${
-                          dailyTimeMinutes === mins
+                        className={`flex-1 py-2 rounded-xl text-xs font-bold border transition-all ${dailyTimeMinutes === mins
                             ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
                             : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
-                        }`}
+                          }`}
                       >
                         {mins} min
                       </button>
@@ -452,12 +445,14 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({
 
             <div className="mt-6 flex justify-center">
               <div className="w-40 h-40 rounded-2xl overflow-hidden border-2 border-white shadow-xl relative group ring-4 ring-indigo-100">
-                <img
-                  src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop&q=80"
-                  alt="Student Onboarding"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent" />
+                <svg viewBox="0 0 200 200" className="w-full h-full" role="img" aria-label="Profile placeholder">
+                  <rect width="200" height="200" fill="#e2e8f0" />
+                  <circle cx="100" cy="72" r="34" fill="#94a3b8" />
+                  <path d="M28 200c0-44 32-70 72-70s72 26 72 70z" fill="#475569" />
+                  <path d="M84 132l16 26 16-26z" fill="#f8fafc" />
+                  <path d="M100 158l-6 42h12z" fill="#1e293b" />
+                </svg>
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent" />
                 <div className="absolute bottom-2 left-2 right-2 text-center text-white">
                   <div className="text-xs font-bold">{name || 'Learner'}</div>
                   <div className="text-[10px] text-indigo-200">{department}</div>
