@@ -24,6 +24,8 @@ import { KnowledgeGapAnalyticsView } from './components/views/KnowledgeGapAnalyt
 import { InterventionCenterView } from './components/views/InterventionCenterView.tsx';
 import { TeacherAnalyticsView } from './components/views/TeacherAnalyticsView.tsx';
 import { ClassesView } from './components/views/ClassesView.tsx';
+import { AssistantChat } from './components/AssistantChat.tsx';
+import { ChatView } from './components/views/ChatView.tsx';
 import { ProfileSettingsView } from './components/views/ProfileSettingsView.tsx';
 import { User, StudentProfile, LearningTwin, KnowledgeGap, AdaptiveLearningPath, LearningTwinConcept, TeacherStudentItem } from './types.ts';
 
@@ -48,6 +50,7 @@ export default function App() {
   const [classCount, setClassCount] = useState(0);
   const [enrolledSubjects, setEnrolledSubjects] = useState<{ id: string; name: string; color: string }[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [chatUnread, setChatUnread] = useState(0);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [studentProfile, setStudentProfile] = useState<StudentProfile | null>(null);
   const [twin, setTwin] = useState<LearningTwin | null>(null);
@@ -129,6 +132,21 @@ export default function App() {
   useEffect(() => {
     loadInitialData();
   }, []);
+
+  useEffect(() => {
+    if (!currentUser) {
+      setChatUnread(0);
+      return;
+    }
+    const poll = () =>
+      fetch('/api/chat/unread')
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => d && setChatUnread(d.unread || 0))
+        .catch(() => {});
+    poll();
+    const t = setInterval(poll, 8000);
+    return () => clearInterval(t);
+  }, [currentUser?.id]);
 
   // Auth gate: only landing/login/register are reachable without a session
   useEffect(() => {
@@ -265,7 +283,7 @@ export default function App() {
                 await loadInitialData();
                 setCurrentScreen('dashboard');
               }}
-              onExit={() => setCurrentScreen('dashboard')}
+              onExit={() => setCurrentScreen('classes')}
             />
           )}
         </main>
@@ -302,7 +320,7 @@ export default function App() {
             )}
 
             {currentScreen === 'classes' && currentUser && (
-              <ClassesView role={currentUser.role === 'TEACHER' ? 'TEACHER' : 'STUDENT'} onChanged={loadInitialData} />
+              <ClassesView role={currentUser.role === 'TEACHER' ? 'TEACHER' : 'STUDENT'} onChanged={loadInitialData} onStartDiagnostic={() => setCurrentScreen('diagnostic')} />
             )}
 
             {currentScreen === 'learning-twin' && (
@@ -410,6 +428,10 @@ export default function App() {
 
             {currentScreen === 'teacher-analytics' && <TeacherAnalyticsView />}
 
+            {currentScreen === 'messages' && currentUser && (
+              <ChatView meId={currentUser.id} onUnreadChange={setChatUnread} />
+            )}
+
             {currentScreen === 'settings' && (
               <ProfileSettingsView
                 user={currentUser}
@@ -441,6 +463,22 @@ export default function App() {
             )}
           </main>
         </div>
+      )}
+      {currentUser && !isFullScreenPage && currentScreen !== 'messages' && (
+        <button
+          onClick={() => setCurrentScreen('messages')}
+          className="fixed bottom-6 right-24 z-40 h-12 px-4 rounded-full bg-indigo-600 text-white shadow-lg hover:bg-indigo-700 flex items-center gap-2 text-sm font-semibold"
+        >
+          {currentUser.role === 'TEACHER' ? 'Students' : 'Teachers'} Chat
+          {chatUnread > 0 && (
+            <span className="bg-white text-indigo-700 text-[11px] font-bold rounded-full min-w-5 h-5 px-1.5 flex items-center justify-center">
+              {chatUnread}
+            </span>
+          )}
+        </button>
+      )}
+      {currentUser && !isFullScreenPage && (
+        <AssistantChat role={currentUser.role === 'TEACHER' ? 'TEACHER' : 'STUDENT'} name={currentUser.name} />
       )}
     </div>
   );

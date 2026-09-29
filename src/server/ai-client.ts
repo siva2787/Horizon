@@ -3,8 +3,8 @@ import path from 'path';
 import { db } from './db/store.ts';
 
 const UPLOAD_DIR = path.join(process.cwd(), 'data', 'uploads');
-const key = () => process.env.GEMINI_API_KEY || '';
-const model = () => process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+const key = () => process.env.GROQ_API_KEY || '';
+const model = () => process.env.GROQ_MODEL || 'openai/gpt-oss-120b';
 
 export const aiEnabled = () => Boolean(key());
 
@@ -20,20 +20,21 @@ export async function aiGenerate(opts: {
     const timer = setTimeout(() => ctrl.abort(), 45000);
     try {
         const m = model();
-        const generationConfig: any = {
+        const body: any = {
+            model: m,
+            messages: [
+                { role: 'system', content: opts.system },
+                { role: 'user', content: opts.prompt },
+            ],
             temperature: opts.temperature ?? 0.6,
-            maxOutputTokens: opts.maxTokens ?? 1024,
+            max_completion_tokens: (opts.maxTokens ?? 1024) + 1024,
         };
-        if (opts.json) generationConfig.responseMimeType = 'application/json';
-        if (m.includes('2.5')) generationConfig.thinkingConfig = { thinkingBudget: 0 };
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent`, {
+        if (m.startsWith('openai/gpt-oss')) body.reasoning_effort = 'low';
+        if (opts.json) body.response_format = { type: 'json_object' };
+        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key() },
-            body: JSON.stringify({
-                systemInstruction: { parts: [{ text: opts.system }] },
-                contents: [{ role: 'user', parts: [{ text: opts.prompt }] }],
-                generationConfig,
-            }),
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key()}` },
+            body: JSON.stringify(body),
             signal: ctrl.signal,
         });
         if (!res.ok) {
@@ -41,7 +42,7 @@ export async function aiGenerate(opts: {
             return null;
         }
         const data: any = await res.json();
-        const text = (data.candidates?.[0]?.content?.parts || []).map((p: any) => p.text || '').join('').trim();
+        const text = String(data.choices?.[0]?.message?.content || '').trim();
         return text || null;
     } catch (err) {
         console.error('AI call error:', err);

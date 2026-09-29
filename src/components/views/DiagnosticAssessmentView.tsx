@@ -21,7 +21,8 @@ export const DiagnosticAssessmentView: React.FC<DiagnosticAssessmentViewProps> =
     fetch('/api/assessment/asmt_diag')
       .then((r) => r.json())
       .then((d) => {
-        if (!Array.isArray(d.questions) || d.questions.length === 0) throw new Error('No diagnostic questions available');
+        if (!Array.isArray(d.questions) || d.questions.length === 0)
+          throw new Error(d.error || 'No pending diagnostic. You have already completed it.');
         setQuestions(d.questions);
       })
       .catch((e) => setLoadError(e.message || 'Failed to load diagnostic'))
@@ -60,7 +61,7 @@ export const DiagnosticAssessmentView: React.FC<DiagnosticAssessmentViewProps> =
         body: JSON.stringify({ answers: selectedAnswers, responseTimeMap: responseTimes.current }),
       });
       const data = await res.json();
-      if (!res.ok || !data.success) throw new Error(data.message || 'Failed to submit diagnostic');
+      if (!res.ok || !data.success) throw new Error(data.message || data.error || 'Failed to submit diagnostic');
       onCompleteDiagnostic(data.totalQuestions ? Math.round((data.correctCount / data.totalQuestions) * 100) : 0);
     } catch (e: any) {
       setLoadError(e.message || 'Failed to submit diagnostic');
@@ -130,7 +131,7 @@ export const DiagnosticAssessmentView: React.FC<DiagnosticAssessmentViewProps> =
             <span className="px-3 py-1 bg-indigo-50 text-indigo-700 font-bold text-xs rounded-full border border-indigo-200">
               Difficulty: {currentQ.difficulty}
             </span>
-            <span className="text-xs font-medium text-slate-400">Concept: Probability Foundations</span>
+            <span className="text-xs font-medium text-slate-400">Concept: {String(currentQ.conceptId || '').replace(/^c_/, '').replace(/_/g, ' ')}</span>
           </div>
 
           <h2 className="text-xl sm:text-2xl font-bold text-slate-900 leading-snug">
@@ -144,17 +145,15 @@ export const DiagnosticAssessmentView: React.FC<DiagnosticAssessmentViewProps> =
                 <div
                   key={idx}
                   onClick={() => handleSelect(option)}
-                  className={`p-4 rounded-2xl border-2 text-sm font-semibold cursor-pointer transition-all flex items-center justify-between ${
-                    isSelected
+                  className={`p-4 rounded-2xl border-2 text-sm font-semibold cursor-pointer transition-all flex items-center justify-between ${isSelected
                       ? 'border-indigo-600 bg-indigo-50/70 text-indigo-950 shadow-xs'
                       : 'border-slate-200 bg-slate-50/50 hover:bg-slate-100 text-slate-700'
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center gap-3">
                     <div
-                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                        isSelected ? 'border-indigo-600 bg-indigo-600 text-white' : 'border-slate-400'
-                      }`}
+                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-indigo-600 bg-indigo-600 text-white' : 'border-slate-400'
+                        }`}
                     >
                       {isSelected && <div className="w-2 h-2 bg-white rounded-full" />}
                     </div>

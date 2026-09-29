@@ -82,6 +82,8 @@ export const AdaptiveAssessmentView: React.FC<AdaptiveAssessmentViewProps> = ({
   const [confidence, setConfidence] = useState<Record<string, number>>({});
   const [levelTrail, setLevelTrail] = useState<Level[]>([]);
   const [attempt, setAttempt] = useState(1);
+  const [plan, setPlan] = useState<{ target: number; startLevel: Level; attempt: number }>({ target: 3, startLevel: 'Easy', attempt: 1 });
+  const [reloadKey, setReloadKey] = useState(0);
   const [tick, setTick] = useState(Date.now());
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
@@ -107,7 +109,6 @@ export const AdaptiveAssessmentView: React.FC<AdaptiveAssessmentViewProps> = ({
     setServed([]);
     setSelectedAnswers({});
     setScoreResult(null);
-    setAttempt(1);
     setQuestions([]);
 
     fetch(`/api/assessment/${activeAssessmentId}`)
@@ -115,10 +116,14 @@ export const AdaptiveAssessmentView: React.FC<AdaptiveAssessmentViewProps> = ({
       .then((data) => {
         if (data.assessment) setAssessmentTitle(data.assessment.title || 'Adaptive Assessment');
         if (data.questions && data.questions.length > 0) setQuestions(data.questions);
+        if (data.plan) {
+          setPlan({ target: data.plan.target, startLevel: data.plan.startLevel || 'Easy', attempt: data.plan.attempt || 1 });
+          setAttempt(data.plan.attempt || 1);
+        }
       })
       .catch((err) => console.error('Failed to load questions:', err))
       .finally(() => setLoading(false));
-  }, [activeAssessmentId]);
+  }, [activeAssessmentId, reloadKey]);
 
   // Live timer
   useEffect(() => {
@@ -127,6 +132,7 @@ export const AdaptiveAssessmentView: React.FC<AdaptiveAssessmentViewProps> = ({
     return () => clearInterval(id);
   }, [phase]);
 
+  const quizLen = Math.max(1, Math.min(plan.target, questions.length));
   const currentQ = served[served.length - 1];
   const selectedOption = currentQ ? selectedAnswers[currentQ.id] : undefined;
   const qElapsed = phase === 'running' ? (tick - qStart.current) / 1000 : 0;
@@ -151,7 +157,7 @@ export const AdaptiveAssessmentView: React.FC<AdaptiveAssessmentViewProps> = ({
   };
 
   const startQuiz = () => {
-    const first = pickNext(questions, [], 'Easy');
+    const first = pickNext(questions, [], plan.startLevel);
     if (!first) return;
     times.current = {};
     setSelectedAnswers({});
@@ -159,7 +165,7 @@ export const AdaptiveAssessmentView: React.FC<AdaptiveAssessmentViewProps> = ({
     setHinted({});
     setConfidence({});
     setLevelTrail([norm(first.difficulty)]);
-    setLevel('Easy');
+    setLevel(plan.startLevel);
     setServed([first]);
     setScoreResult(null);
     setSubmitError('');
@@ -217,7 +223,7 @@ export const AdaptiveAssessmentView: React.FC<AdaptiveAssessmentViewProps> = ({
     const nextLevel = LEVELS[c >= 75 ? Math.min(2, idx + 1) : c <= 45 ? Math.max(0, idx - 1) : idx];
     setLevel(nextLevel);
 
-    if (served.length < questions.length) {
+    if (served.length < quizLen) {
       const next = pickNext(questions, served.map((q) => q.id), nextLevel);
       if (next) {
         setServed([...served, next]);
@@ -231,10 +237,7 @@ export const AdaptiveAssessmentView: React.FC<AdaptiveAssessmentViewProps> = ({
   };
 
   const handleRetake = () => {
-    setAttempt(attempt + 1);
-    setPhase('idle');
-    setServed([]);
-    setScoreResult(null);
+    setReloadKey((k) => k + 1);
   };
 
   if (loading) {
@@ -246,9 +249,9 @@ export const AdaptiveAssessmentView: React.FC<AdaptiveAssessmentViewProps> = ({
     );
   }
 
-  const isLast = served.length >= questions.length;
-  const answered = phase === 'running' ? served.length - 1 : questions.length;
-  const progressPct = questions.length ? Math.round((answered / questions.length) * 100) : 0;
+  const isLast = served.length >= quizLen;
+  const answered = phase === 'running' ? served.length - 1 : quizLen;
+  const progressPct = quizLen ? Math.round((answered / quizLen) * 100) : 0;
   const confTone = avgConfidence >= 75 ? 'text-emerald-600' : avgConfidence >= 45 ? 'text-amber-600' : 'text-rose-600';
 
   return (
@@ -332,7 +335,7 @@ export const AdaptiveAssessmentView: React.FC<AdaptiveAssessmentViewProps> = ({
             ))}
           </div>
           <div className="text-[11px] font-semibold text-slate-500">
-            {questions.length} questions • Attempt #{attempt}
+            {quizLen} questions • Attempt #{attempt}
           </div>
           {questions.length === 0 ? (
             <div className="text-xs text-rose-600 font-semibold">No questions available for this quiz.</div>
@@ -362,7 +365,7 @@ export const AdaptiveAssessmentView: React.FC<AdaptiveAssessmentViewProps> = ({
                   {fmt(qElapsed)}
                 </span>
                 <span className="text-xs font-semibold text-slate-400">
-                  Question {served.length} of {questions.length}
+                  Question {served.length} of {quizLen}
                 </span>
               </div>
             </div>
@@ -394,8 +397,8 @@ export const AdaptiveAssessmentView: React.FC<AdaptiveAssessmentViewProps> = ({
                     key={idx}
                     onClick={() => handleSelect(option)}
                     className={`p-4 rounded-2xl border-2 text-sm font-semibold cursor-pointer transition-all flex items-center justify-between ${isSelected
-                        ? 'border-indigo-600 bg-indigo-50/70 text-indigo-950 shadow-xs'
-                        : 'border-slate-200 bg-slate-50/50 hover:bg-slate-100 text-slate-700'
+                      ? 'border-indigo-600 bg-indigo-50/70 text-indigo-950 shadow-xs'
+                      : 'border-slate-200 bg-slate-50/50 hover:bg-slate-100 text-slate-700'
                       }`}
                   >
                     <div className="flex items-center gap-3">
@@ -524,7 +527,7 @@ export const AdaptiveAssessmentView: React.FC<AdaptiveAssessmentViewProps> = ({
                 {scoreResult?.score !== undefined ? scoreResult.score : 0}%
               </div>
               <div className="text-xs font-bold text-slate-500 mt-1">
-                {scoreResult?.correctCount ?? 0} of {scoreResult?.totalQuestions ?? questions.length} Questions Correct
+                {scoreResult?.correctCount ?? 0} of {scoreResult?.totalQuestions ?? quizLen} Questions Correct
               </div>
             </div>
 
@@ -574,7 +577,7 @@ export const AdaptiveAssessmentView: React.FC<AdaptiveAssessmentViewProps> = ({
               <div className="space-y-4">
                 {scoreResult.breakdown.map((item: any, idx: number) => {
                   const isCorrect = item.isCorrect;
-                  const q = questions.find((x) => x.question === item.question);
+                  const q = questions.find((x) => x.id === item.questionId) || questions.find((x) => x.question === item.question);
                   const c = q ? confidence[q.id] : undefined;
                   const t = q ? times.current[q.id] : undefined;
                   return (
@@ -630,8 +633,8 @@ export const AdaptiveAssessmentView: React.FC<AdaptiveAssessmentViewProps> = ({
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-1">
                         <div
                           className={`p-3 rounded-xl border font-medium ${isCorrect
-                              ? 'bg-emerald-100/50 border-emerald-200 text-emerald-950'
-                              : 'bg-rose-100/50 border-rose-200 text-rose-950'
+                            ? 'bg-emerald-100/50 border-emerald-200 text-emerald-950'
+                            : 'bg-rose-100/50 border-rose-200 text-rose-950'
                             }`}
                         >
                           <span className="font-bold block text-[10px] uppercase tracking-wider text-slate-500 mb-0.5">

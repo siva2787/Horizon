@@ -288,7 +288,7 @@ export const AITutorView: React.FC<AITutorViewProps> = ({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         <div className="lg:col-span-4 space-y-4">
           <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-5">
             <div>
@@ -385,127 +385,170 @@ export const AITutorView: React.FC<AITutorViewProps> = ({
           </div>
         </div>
 
-        <div className="lg:col-span-8 bg-white rounded-3xl border border-slate-200 shadow-xs flex flex-col h-[640px] overflow-hidden">
-          <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center">
-                <Brain className="w-4 h-4" />
+        <div className="lg:col-span-8 relative min-h-[640px]">
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-xs flex flex-col h-[640px] lg:h-auto lg:absolute lg:inset-0 overflow-hidden">
+            <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center">
+                  <Brain className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-slate-900">AI Twin Tutor</div>
+                  <div className="text-[10px] text-slate-500">Grounding responses with your mastery history</div>
+                </div>
               </div>
-              <div>
-                <div className="text-xs font-bold text-slate-900">AI Twin Tutor</div>
-                <div className="text-[10px] text-slate-500">Grounding responses with your mastery history</div>
-              </div>
+
+              <div className="text-[11px] font-semibold text-slate-400">Interactive Dialogue</div>
             </div>
 
-            <div className="text-[11px] font-semibold text-slate-400">Interactive Dialogue</div>
-          </div>
-
-          <div className="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4 bg-slate-50/30">
-            {initialPrompt && (
-              <div className="bg-gradient-to-r from-indigo-50 via-purple-50 to-indigo-50 border border-indigo-100/90 rounded-2xl p-3.5 shadow-2xs flex items-start gap-3">
-                <Sparkles className="w-4 h-4 text-indigo-600 mt-0.5 shrink-0 animate-pulse" />
-                <div className="text-xs space-y-0.5">
-                  <div className="font-bold text-indigo-950 flex items-center gap-2">
-                    <span>Context-Injected Navigation Prompt</span>
-                    <span className="px-2 py-0.5 bg-indigo-600 text-white rounded-full text-[10px] font-bold">
-                      {conceptName} ({masteryScore}%)
-                    </span>
+            <div className="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4 bg-slate-50/30">
+              {initialPrompt && (
+                <div className="bg-gradient-to-r from-indigo-50 via-purple-50 to-indigo-50 border border-indigo-100/90 rounded-2xl p-3.5 shadow-2xs flex items-start gap-3">
+                  <Sparkles className="w-4 h-4 text-indigo-600 mt-0.5 shrink-0 animate-pulse" />
+                  <div className="text-xs space-y-0.5">
+                    <div className="font-bold text-indigo-950 flex items-center gap-2">
+                      <span>Context-Injected Navigation Prompt</span>
+                      <span className="px-2 py-0.5 bg-indigo-600 text-white rounded-full text-[10px] font-bold">
+                        {conceptName} ({masteryScore}%)
+                      </span>
+                    </div>
+                    <p className="text-indigo-900 font-semibold italic">"{initialPrompt}"</p>
                   </div>
-                  <p className="text-indigo-900 font-semibold italic">"{initialPrompt}"</p>
                 </div>
-              </div>
-            )}
+              )}
 
-            {messages.map((m) => {
-              const isUser = m.sender === 'USER';
-              return (
-                <div
-                  key={m.id}
-                  className={`flex items-start gap-3 ${isUser ? 'flex-row-reverse' : ''}`}
-                >
+              {messages.map((m) => {
+                const isUser = m.sender === 'USER';
+                return (
                   <div
-                    className={`w-7 h-7 rounded-lg shrink-0 flex items-center justify-center text-xs font-bold ${isUser
+                    key={m.id}
+                    className={`flex items-start gap-3 ${isUser ? 'flex-row-reverse' : ''}`}
+                  >
+                    <div
+                      className={`w-7 h-7 rounded-lg shrink-0 flex items-center justify-center text-xs font-bold ${isUser
                         ? 'bg-indigo-600 text-white'
                         : 'bg-gradient-to-tr from-purple-600 to-indigo-600 text-white'
-                      }`}
-                  >
-                    {isUser ? 'U' : <Sparkles className="w-3.5 h-3.5" />}
-                  </div>
-
-                  <div
-                    className={`max-w-[85%] rounded-2xl p-4 text-xs sm:text-sm leading-relaxed ${isUser
-                        ? 'bg-indigo-600 text-white font-medium rounded-tr-none'
-                        : 'bg-white border border-slate-200/90 text-slate-800 shadow-xs rounded-tl-none'
-                      }`}
-                  >
-                    {isUser ? (
-                      <div className="whitespace-pre-wrap">{m.content}</div>
-                    ) : (
-                      <div className="tutor-markdown-content">
-                        <ReactMarkdown
-                          components={{
-                            a: ({ node, ...props }) => (
-                              <a
-                                {...props}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-red-600 hover:underline font-semibold"
-                              />
-                            ),
-                          }}
-                        >
-                          {m.content}
-                        </ReactMarkdown>
-                      </div>
-                    )}
-                    <div
-                      className={`text-[10px] mt-2 font-mono ${isUser ? 'text-indigo-200 text-right' : 'text-slate-400'
                         }`}
                     >
-                      {new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      {isUser ? 'U' : <Sparkles className="w-3.5 h-3.5" />}
+                    </div>
+
+                    <div
+                      className={`max-w-[85%] rounded-2xl p-4 text-xs sm:text-sm leading-relaxed ${isUser
+                        ? 'bg-indigo-600 text-white font-medium rounded-tr-none'
+                        : 'bg-white border border-slate-200/90 text-slate-800 shadow-xs rounded-tl-none'
+                        }`}
+                    >
+                      {isUser ? (
+                        <div className="whitespace-pre-wrap">{m.content}</div>
+                      ) : (
+                        <div className="tutor-markdown-content">
+                          <ReactMarkdown
+                            components={{
+                              pre: ({ node, children }: any) => (
+                                <pre
+                                  style={{
+                                    background: '#0f172a',
+                                    color: '#e2e8f0',
+                                    padding: '14px 16px',
+                                    borderRadius: 12,
+                                    margin: '12px 0',
+                                    overflowX: 'auto',
+                                    whiteSpace: 'pre',
+                                    fontSize: 13,
+                                    lineHeight: 1.7,
+                                    tabSize: 4,
+                                    fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Consolas, "DejaVu Sans Mono", monospace',
+                                  }}
+                                >
+                                  {React.Children.map(children, (c: any) =>
+                                    React.isValidElement(c) ? React.cloneElement(c as any, { 'data-block': true }) : c
+                                  )}
+                                </pre>
+                              ),
+                              code: ({ node, className, children, ...props }: any) =>
+                                props['data-block'] ? (
+                                  <code
+                                    style={{
+                                      background: 'transparent',
+                                      color: 'inherit',
+                                      padding: 0,
+                                      border: 'none',
+                                      borderRadius: 0,
+                                      fontWeight: 400,
+                                      fontSize: 'inherit',
+                                      whiteSpace: 'pre',
+                                      fontFamily: 'inherit',
+                                    }}
+                                  >
+                                    {children}
+                                  </code>
+                                ) : (
+                                  <code className={className}>{children}</code>
+                                ),
+                              a: ({ node, ...props }) => (
+                                <a
+                                  {...props}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-red-600 hover:underline font-semibold"
+                                />
+                              ),
+                            }}
+                          >
+                            {m.content}
+                          </ReactMarkdown>
+                        </div>
+                      )}
+                      <div
+                        className={`text-[10px] mt-2 font-mono ${isUser ? 'text-indigo-200 text-right' : 'text-slate-400'
+                          }`}
+                      >
+                        {new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
 
-            {loading && (
-              <div className="flex items-center gap-3">
-                <div className="w-7 h-7 rounded-lg bg-purple-600 text-white flex items-center justify-center animate-spin">
-                  <RefreshCw className="w-3.5 h-3.5" />
+              {loading && (
+                <div className="flex items-center gap-3">
+                  <div className="w-7 h-7 rounded-lg bg-purple-600 text-white flex items-center justify-center animate-spin">
+                    <RefreshCw className="w-3.5 h-3.5" />
+                  </div>
+                  <div className="bg-white border border-slate-200 rounded-2xl px-4 py-3 text-xs text-slate-500 italic shadow-xs flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-purple-600 animate-pulse" />
+                    <span>Thinking & referencing your prerequisite gaps...</span>
+                  </div>
                 </div>
-                <div className="bg-white border border-slate-200 rounded-2xl px-4 py-3 text-xs text-slate-500 italic shadow-xs flex items-center gap-2">
-                  <Sparkles className="w-3.5 h-3.5 text-purple-600 animate-pulse" />
-                  <span>Thinking & referencing your prerequisite gaps...</span>
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
+              )}
+              <div ref={messagesEndRef} />
+            </div>
 
-          <div className="p-4 border-t border-slate-100 bg-white">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                submitInput(inputText);
-              }}
-              className="flex items-center gap-2"
-            >
-              <input
-                type="text"
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                placeholder={`Ask about ${conceptName} or request an intuitive analogy...`}
-                className="flex-1 px-4 py-3 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-800"
-              />
-              <button
-                type="submit"
-                disabled={!inputText.trim() || loading}
-                className="p-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl shadow-xs transition-all"
+            <div className="p-4 border-t border-slate-100 bg-white">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  submitInput(inputText);
+                }}
+                className="flex items-center gap-2"
               >
-                <Send className="w-4 h-4" />
-              </button>
-            </form>
+                <input
+                  type="text"
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  placeholder={`Ask about ${conceptName} or request an intuitive analogy...`}
+                  className="flex-1 px-4 py-3 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-800"
+                />
+                <button
+                  type="submit"
+                  disabled={!inputText.trim() || loading}
+                  className="p-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl shadow-xs transition-all"
+                >
+                  <Send className="w-4 h-4" />
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </div>

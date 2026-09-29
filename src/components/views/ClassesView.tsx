@@ -22,6 +22,7 @@ interface Props {
   role: 'TEACHER' | 'STUDENT';
   onChanged: () => void;
   onOpenSubject?: () => void;
+  onStartDiagnostic?: () => void;
 }
 
 const inp =
@@ -73,7 +74,7 @@ const Empty: React.FC<{ icon: any; text: string }> = ({ icon: Icon, text }) => (
   </div>
 );
 
-export const ClassesView: React.FC<Props> = ({ role, onChanged }) => {
+export const ClassesView: React.FC<Props> = ({ role, onChanged, onStartDiagnostic }) => {
   const [classes, setClasses] = useState<any[]>([]);
   const [catalog, setCatalog] = useState<any[]>([]);
   const [err, setErr] = useState('');
@@ -86,12 +87,14 @@ export const ClassesView: React.FC<Props> = ({ role, onChanged }) => {
   const [topicName, setTopicName] = useState<Record<string, string>>({});
   const [uploadTopic, setUploadTopic] = useState<Record<string, string>>({});
   const [q, setQ] = useState<Record<string, any>>({});
+  const [diagRequired, setDiagRequired] = useState(false);
   const fileRef = useRef<Record<string, HTMLInputElement | null>>({});
 
   const load = async () => {
     try {
       setClasses(await api('/api/classes'));
       if (role === 'TEACHER') setCatalog(await api('/api/catalog'));
+      else setDiagRequired(Boolean((await api('/api/diagnostic/status')).required));
     } catch (e: any) {
       setErr(e.message);
     }
@@ -191,13 +194,21 @@ export const ClassesView: React.FC<Props> = ({ role, onChanged }) => {
                       </div>
                     </div>
                   </div>
-                  <button
-                    className="px-3 py-1.5 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 text-xs font-bold flex items-center gap-1.5 transition-colors"
-                    onClick={() => run(() => api(`/api/classes/${c.id}/leave`, 'POST'))}
-                  >
-                    <LogOut className="w-3.5 h-3.5" />
-                    Leave
-                  </button>
+                  <div className="flex items-center gap-2">
+                    {diagRequired && (
+                      <button className={btn} onClick={() => onStartDiagnostic?.()}>
+                        <HelpCircle className="w-3.5 h-3.5" />
+                        Perform Diagnostic Test
+                      </button>
+                    )}
+                    <button
+                      className="px-3 py-1.5 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 text-xs font-bold flex items-center gap-1.5 transition-colors"
+                      onClick={() => run(() => api(`/api/classes/${c.id}/leave`, 'POST'))}
+                    >
+                      <LogOut className="w-3.5 h-3.5" />
+                      Leave
+                    </button>
+                  </div>
                 </div>
 
                 <div>
@@ -353,8 +364,8 @@ export const ClassesView: React.FC<Props> = ({ role, onChanged }) => {
                     key={t.id}
                     onClick={() => setTab({ ...tab, [c.id]: t.id })}
                     className={`px-4 py-2.5 text-xs font-bold flex items-center gap-2 whitespace-nowrap border-b-2 -mb-px transition-all ${active === t.id
-                        ? 'border-indigo-600 text-indigo-700'
-                        : 'border-transparent text-slate-500 hover:text-slate-800'
+                      ? 'border-indigo-600 text-indigo-700'
+                      : 'border-transparent text-slate-500 hover:text-slate-800'
                       }`}
                   >
                     <t.icon className="w-3.5 h-3.5" />
