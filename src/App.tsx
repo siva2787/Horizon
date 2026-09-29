@@ -23,11 +23,14 @@ import { StudentInsightsView } from './components/views/StudentInsightsView.tsx'
 import { KnowledgeGapAnalyticsView } from './components/views/KnowledgeGapAnalyticsView.tsx';
 import { InterventionCenterView } from './components/views/InterventionCenterView.tsx';
 import { TeacherAnalyticsView } from './components/views/TeacherAnalyticsView.tsx';
+import { ParentReportsView } from './components/views/ParentReportsView.tsx';
+import { BackupView } from './components/views/BackupView.tsx';
 import { ClassesView } from './components/views/ClassesView.tsx';
 import { AssistantChat } from './components/AssistantChat.tsx';
+import { NextActionCard } from './components/NextActionCard.tsx';
 import { ChatView } from './components/views/ChatView.tsx';
 import { ProfileSettingsView } from './components/views/ProfileSettingsView.tsx';
-import { User, StudentProfile, LearningTwin, KnowledgeGap, AdaptiveLearningPath, LearningTwinConcept, TeacherStudentItem } from './types.ts';
+import { User, StudentProfile, LearningTwin, KnowledgeGap, AdaptiveLearningPath, LearningTwinConcept, TeacherStudentItem, DecisionRecord } from './types.ts';
 
 export default function App() {
   const SCREEN_STORAGE_KEY = 'learntwin_current_screen';
@@ -51,6 +54,7 @@ export default function App() {
   const [enrolledSubjects, setEnrolledSubjects] = useState<{ id: string; name: string; color: string }[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [chatUnread, setChatUnread] = useState(0);
+  const [decision, setDecision] = useState<DecisionRecord | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [studentProfile, setStudentProfile] = useState<StudentProfile | null>(null);
   const [twin, setTwin] = useState<LearningTwin | null>(null);
@@ -86,6 +90,7 @@ export default function App() {
     setKnowledgeGaps([]);
     setLearningPath(null);
     setUnreadCount(0);
+    setDecision(null);
     setClassCount(0);
     setEnrolledSubjects([]);
   };
@@ -117,6 +122,7 @@ export default function App() {
           fetch('/api/notifications').then((r) => r.json()),
         ]);
         setTwin(twinData.twin || null);
+        setDecision(twinData.currentDecision || null);
         setKnowledgeGaps(Array.isArray(gapsData) ? gapsData : []);
         setLearningPath(pathData && !pathData.error ? pathData : null);
         setTwinConcepts(Array.isArray(conceptsData) ? conceptsData : []);
@@ -142,7 +148,7 @@ export default function App() {
       fetch('/api/chat/unread')
         .then((r) => (r.ok ? r.json() : null))
         .then((d) => d && setChatUnread(d.unread || 0))
-        .catch(() => {});
+        .catch(() => { });
     poll();
     const t = setInterval(poll, 8000);
     return () => clearInterval(t);
@@ -188,6 +194,19 @@ export default function App() {
 
     setActiveTutorConcept({ id, name, mastery, gap, initialPrompt });
     setCurrentScreen('tutor');
+  };
+
+  const handleDecisionAct = (d: DecisionRecord) => {
+    switch (d.action) {
+      case 'PRACTICE':
+      case 'CHALLENGE':
+      case 'REVIEW':
+        return handleOpenAssessment(d.targetConceptId);
+      case 'TEACHER_INTERVENTION':
+        return setCurrentScreen('messages');
+      default:
+        return handleOpenTutorForConcept(d.targetConceptId);
+    }
   };
 
   const navigate = (s: string) => {
@@ -303,20 +322,23 @@ export default function App() {
           <main className="flex-1 p-4 sm:p-6 lg:p-8 min-w-0">
             {/* Student Screens */}
             {currentScreen === 'dashboard' && (
-              <DashboardView
-                twin={twin}
-                subjects={enrolledSubjects}
-                studentName={currentUser?.name}
-                gaps={knowledgeGaps}
-                onStartRecommendedLearning={() => handleOpenTutorForConcept()}
-                streakDays={studentProfile?.learningStreakDays}
-                onNavigateTwin={() => setCurrentScreen('learning-twin')}
-                onNavigateGraph={() => setCurrentScreen('knowledge-graph')}
-                onNavigateTutor={(cId) => handleOpenTutorForConcept(cId)}
-                onNavigatePath={() => setCurrentScreen('learning-path')}
-                onNavigateAssessments={(cId) => handleOpenAssessment(cId)}
-                onNavigateRetention={() => setCurrentScreen('retention')}
-              />
+              <>
+                <NextActionCard decision={decision} onAct={handleDecisionAct} />
+                <DashboardView
+                  twin={twin}
+                  subjects={enrolledSubjects}
+                  studentName={currentUser?.name}
+                  gaps={knowledgeGaps}
+                  onStartRecommendedLearning={() => handleOpenTutorForConcept()}
+                  streakDays={studentProfile?.learningStreakDays}
+                  onNavigateTwin={() => setCurrentScreen('learning-twin')}
+                  onNavigateGraph={() => setCurrentScreen('knowledge-graph')}
+                  onNavigateTutor={(cId) => handleOpenTutorForConcept(cId)}
+                  onNavigatePath={() => setCurrentScreen('learning-path')}
+                  onNavigateAssessments={(cId) => handleOpenAssessment(cId)}
+                  onNavigateRetention={() => setCurrentScreen('retention')}
+                />
+              </>
             )}
 
             {currentScreen === 'classes' && currentUser && (
@@ -427,6 +449,10 @@ export default function App() {
             {currentScreen === 'interventions' && <InterventionCenterView />}
 
             {currentScreen === 'teacher-analytics' && <TeacherAnalyticsView />}
+
+            {currentScreen === 'parent-reports' && currentUser?.role === 'TEACHER' && <ParentReportsView />}
+
+            {currentScreen === 'backup' && currentUser?.role === 'TEACHER' && <BackupView />}
 
             {currentScreen === 'messages' && currentUser && (
               <ChatView meId={currentUser.id} onUnreadChange={setChatUnread} />

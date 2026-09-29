@@ -17,6 +17,8 @@ import {
   Lightbulb,
   LogOut,
   School,
+  Cloud,
+  Send,
 } from 'lucide-react';
 import { UserRole } from '../../types.ts';
 
@@ -64,6 +66,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'gap-analytics', label: 'Knowledge Gap Analytics', icon: GitFork },
     { id: 'interventions', label: 'Intervention Center', icon: AlertOctagon },
     { id: 'teacher-analytics', label: 'Teacher Analytics', icon: BarChart3 },
+    { id: 'parent-reports', label: 'Parent Reports', icon: Send },
+    { id: 'backup', label: 'Cloud Backup', icon: Cloud },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 

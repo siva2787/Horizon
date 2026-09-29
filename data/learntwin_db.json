@@ -682,18 +682,18 @@
     {
       "id": "twin_usr_1790689366091",
       "studentId": "usr_1790689366091",
-      "overallMastery": 40,
+      "overallMastery": 74,
       "learningMomentum": 0,
-      "retentionHealth": 0,
-      "activeGapsCount": 1,
+      "retentionHealth": 100,
+      "activeGapsCount": 0,
       "conceptsMasteredCount": 0,
       "totalStudyHours": 0,
-      "assessmentsCompletedCount": 1,
-      "avgAssessmentScore": 50,
+      "assessmentsCompletedCount": 5,
+      "avgAssessmentScore": 45,
       "subjectMastery": {
-        "sub_1790664709917": 40
+        "sub_1790664709917": 74
       },
-      "updatedAt": "2026-09-29T14:07:40.929Z"
+      "updatedAt": "2026-09-29T17:28:52.123Z"
     }
   ],
   "learningTwinConcepts": [
@@ -815,24 +815,24 @@
       "id": "ltc_usr_1790689366091_c_top_1790664766987",
       "studentId": "usr_1790689366091",
       "conceptId": "c_top_1790664766987",
-      "masteryScore": 40,
-      "uncertainty": "Medium",
-      "confidenceLevel": 60,
-      "attemptsCount": 2,
-      "correctCount": 1,
-      "incorrectCount": 1,
-      "recentAccuracy": 50,
-      "weightedAccuracy": 35,
-      "avgResponseTimeMs": 11087,
+      "masteryScore": 74,
+      "uncertainty": "Low",
+      "confidenceLevel": 79,
+      "attemptsCount": 17,
+      "correctCount": 8,
+      "incorrectCount": 9,
+      "recentAccuracy": 100,
+      "weightedAccuracy": 60,
+      "avgResponseTimeMs": 10556,
       "hintsUsed": 0,
       "retryCount": 0,
-      "independentEvidenceCount": 2,
+      "independentEvidenceCount": 7,
       "forgettingRisk": "Low",
       "transferScore": 50,
       "status": "Learning",
-      "lastAssessedAt": "2026-09-29T13:53:02.586Z",
-      "lastPracticedAt": "2026-09-29T13:53:02.565Z",
-      "lastStrongEvidenceAt": "2026-09-29T13:53:02.530Z"
+      "lastAssessedAt": "2026-09-29T16:04:02.268Z",
+      "lastPracticedAt": "2026-09-29T16:04:02.268Z",
+      "lastStrongEvidenceAt": "2026-09-29T16:04:02.268Z"
     }
   ],
   "knowledgeGaps": [
@@ -905,12 +905,13 @@
       "studentId": "usr_1790689366091",
       "conceptId": "c_top_1790664766987",
       "conceptName": "Python Basics",
-      "severity": "Moderate",
-      "masteryScore": 40,
-      "reason": "Mastery at 40% with uncertainty (Medium). Frequent errors during verification.",
+      "severity": "Critical",
+      "masteryScore": 13,
+      "reason": "Mastery at 13% with uncertainty (Low). Frequent errors during verification.",
       "underlyingGapConcept": "Foundational Definitions",
-      "status": "UNRESOLVED",
-      "detectedAt": "2026-09-29T13:53:02.587Z"
+      "status": "RESOLVED",
+      "detectedAt": "2026-09-29T13:53:02.587Z",
+      "resolvedAt": "2026-09-29T16:04:02.294Z"
     }
   ],
   "questions": [
@@ -1695,6 +1696,321 @@
       ],
       "correctAnswer": "Unstable, high-variance coefficient estimates (multicollinearity)",
       "explanation": "XᵀX becomes singular or near-singular, so coefficients are not uniquely determined; the cost stays convex."
+    },
+    {
+      "id": "q_ai_mumuuesl_1",
+      "conceptId": "c_top_1790664766987",
+      "difficulty": "Easy",
+      "question": "Which of the following statements correctly describes the behavior of the function `myenumerate` as defined in the material?",
+      "options": [
+        "It returns a list of tuples containing each element and its original position in the iterable.",
+        "It modifies the original iterable by inserting the index before each element.",
+        "It yields pairs of (index, element) starting from the provided start value and increments the index for each element.",
+        "It only works with iterables that support random access, such as lists."
+      ],
+      "correctAnswer": "It yields pairs of (index, element) starting from the provided start value and increments the index for each element.",
+      "explanation": "The material defines `myenumerate(iter, start=0)` that sets `i = start` and yields `i, e` for each element `e` in the iterable, incrementing `i` each time, matching the first option.",
+      "hint": "Consider how the function uses a counter variable and the `yield` statement."
+    },
+    {
+      "id": "q_ai_mumuuesl_2",
+      "conceptId": "c_top_1790664766987",
+      "difficulty": "Medium",
+      "question": "When creating a list of functions that add their index to an argument, why does `fun_list1` produce different results from `fun_list2`?",
+      "options": [
+        "`fun_list1` uses early binding, capturing the value of `i` at function definition time.",
+        "`fun_list2` overwrites the previous functions with the same name, causing only the last function to remain.",
+        "`fun_list1` uses late binding, so each function sees the final value of `i` after the loop ends.",
+        "`fun_list2` fails because default arguments cannot be used with lambda expressions."
+      ],
+      "correctAnswer": "`fun_list1` uses late binding, so each function sees the final value of `i` after the loop ends.",
+      "explanation": "The material explains that `fun1` in `fun_list1` references the variable `i` which, after the loop, holds its last assigned value, illustrating late binding. `fun2` in `fun_list2` uses a default argument to capture the current `i`, which is early binding.",
+      "hint": "Think about when the variable `i` is evaluated relative to function creation."
+    },
+    {
+      "id": "q_ai_mumuuesl_3",
+      "conceptId": "c_top_1790664766987",
+      "difficulty": "Easy",
+      "question": "What will be the output of the following code snippet based on the material?\npython\nimport time\nstart = time.perf_counter()\nfor _ in range(1000000):\n    pass\nend = time.perf_counter()\nprint(end - start < 0.2)",
+      "options": [
+        "True, because the loop includes a hidden sleep that ensures the time is below 0.2 seconds.",
+        "False, because `perf_counter` always returns a value greater than 0.2 seconds.",
+        "False, because the code measures wall‑clock time, which is always larger than CPU time.",
+        "True, because the loop runs very quickly and the measured time is less than 0.2 seconds."
+      ],
+      "correctAnswer": "True, because the loop runs very quickly and the measured time is less than 0.2 seconds.",
+      "explanation": "The material notes that very small measured times (e.g., <0.2 s) are likely inaccurate, and a tight empty loop typically finishes faster than that, so the printed boolean will be `True`.",
+      "hint": "Consider how fast an empty `for` loop executes."
+    },
+    {
+      "id": "q_ai_mumuuesl_4",
+      "conceptId": "c_top_1790664766987",
+      "difficulty": "Medium",
+      "question": "In the `myplot` function, what is the purpose of the line `ax.set_xscale('linear')`?",
+      "options": [
+        "It automatically adjusts the plot limits to fit the data range.",
+        "It enables logarithmic scaling for the y‑axis while keeping the x‑axis unchanged.",
+        "It converts the x‑axis values from degrees to radians before plotting.",
+        "It explicitly sets the horizontal axis to use a linear scaling, overriding any previous scale setting."
+      ],
+      "correctAnswer": "It explicitly sets the horizontal axis to use a linear scaling, overriding any previous scale setting.",
+      "explanation": "The material shows `ax.set_xscale('linear')` with a comment that it makes a 'log' or 'linear' scale; here it forces a linear scale for the x‑axis.",
+      "hint": "Look at the parameter passed to `set_xscale`."
+    },
+    {
+      "id": "q_ai_mumuuesl_5",
+      "conceptId": "c_top_1790664766987",
+      "difficulty": "Hard",
+      "question": "Why might the `flip(p)` function, as described, return `False` even when `p` is close to 1?",
+      "options": [
+        "Because `random.random()` generates numbers in the range [0, 1), never reaching 1, so `p` must be exactly 1 to guarantee `True`.",
+        "Because the function mistakenly uses integer division, truncating the probability.",
+        "Because the function inverts the comparison, returning `True` when the random number is less than `p`.",
+        "Because `random.random()` can still produce a value greater than `p` due to floating‑point rounding."
+      ],
+      "correctAnswer": "Because `random.random()` generates numbers in the range [0, 1), never reaching 1, so `p` must be exactly 1 to guarantee `True`.",
+      "explanation": "The material defines `flip(prob)` as `return random.random() < prob`. Since `random.random()` yields values in [0,1), only when `prob` equals 1 does the comparison always succeed; otherwise there is a non‑zero chance of `False` even for high `p`.",
+      "hint": "Consider the interval from which `random.random()` draws its values."
+    },
+    {
+      "id": "q_ai_mumuuesl_6",
+      "conceptId": "c_top_1790664766987",
+      "difficulty": "Medium",
+      "question": "Which modification to the `argmaxall` function would allow it to return the first maximal element instead of all of them, while preserving its overall behavior?",
+      "options": [
+        "Initialize `maxv` to `0` instead of `-math.inf` to ignore negative values.",
+        "Add a `break` statement after the first `if v > maxv` block to exit the loop early.",
+        "Replace the list `maxvals` with a single variable `max_elem` and assign it when a new maximum is found, ignoring equal values.",
+        "Change the comparison from `>` to `>=` so that later equal values overwrite earlier ones."
+      ],
+      "correctAnswer": "Replace the list `maxvals` with a single variable `max_elem` and assign it when a new maximum is found, ignoring equal values.",
+      "explanation": "The material shows `argmaxall` building a list of all maximal elements. To keep only the first, one would store a single element when a new max is encountered and skip the `elif v == maxv` branch, matching the first option.",
+      "hint": "Think about how to handle the case when a value equals the current maximum."
+    },
+    {
+      "id": "q_ai_mumuuesl_7",
+      "conceptId": "c_top_1790664766987",
+      "difficulty": "Easy",
+      "question": "If a developer wants to suppress all display output from a class inheriting `Displayable` without modifying the class code, what is the most straightforward way according to the material?",
+      "options": [
+        "Pass a keyword argument `silent=True` to every `display` call.",
+        "Set the class attribute `max_display_level` to `0` after the class definition.",
+        "Import the `logging` module and set its level to `CRITICAL`.",
+        "Override the `display` method in a subclass to do nothing."
+      ],
+      "correctAnswer": "Set the class attribute `max_display_level` to `0` after the class definition.",
+      "explanation": "The material explains that `display` prints only when `level <= max_display_level`, and that setting `max_display_level` to `0` disables all output.",
+      "hint": "Think about the numeric threshold that controls printing."
+    },
+    {
+      "id": "q_ai_mumuuesl_8",
+      "conceptId": "c_top_1790664766987",
+      "difficulty": "Hard",
+      "question": "When using `timeit.timeit` with the statement `\"foo.bar(aaa)\"` and `setup=\"from __main__ import foo,aaa\"`, what would happen if the `setup` string omitted the import of `aaa`?",
+      "options": [
+        "The timed statement would execute with `aaa` set to `None` by default.",
+        "`timeit` would silently treat `aaa` as a global variable from the previous session.",
+        "`timeit` would raise a `NameError` because `aaa` is undefined in the timed statement.",
+        "The timing would be inaccurate but would still run without error."
+      ],
+      "correctAnswer": "`timeit` would raise a `NameError` because `aaa` is undefined in the timed statement.",
+      "explanation": "The material notes that the `setup` string is needed so Python can find the names used in the timed string; omitting `aaa` leaves it undefined, causing a `NameError`.",
+      "hint": "Consider what happens when a name used in the timed code hasn't been imported."
+    },
+    {
+      "id": "q_ai_mumuuesl_9",
+      "conceptId": "c_top_1790664766987",
+      "difficulty": "Medium",
+      "question": "In the context of the material, which of the following best explains why using a generator expression inside `list()` yields the same result as directly using a list comprehension for the `ga` generator?",
+      "options": [
+        "The generator expression caches all results internally, making it indistinguishable from a list comprehension.",
+        "List comprehensions automatically convert generator objects to lists, so the two are equivalent.",
+        "Generators and list comprehensions are syntactically identical; the only difference is the function name.",
+        "Both constructs iterate over the same range and apply identical filtering and transformation logic, producing the same sequence of values."
+      ],
+      "correctAnswer": "Both constructs iterate over the same range and apply identical filtering and transformation logic, producing the same sequence of values.",
+      "explanation": "The material shows `ga(n)` yielding squares of even numbers and states that `list(a)` (where `a` is the generator) gives the same results as the earlier comprehension, because both traverse the same `range` with the same condition and operation.",
+      "hint": "Focus on the underlying iteration and condition, not on storage."
+    },
+    {
+      "id": "q_ai_mumuuesl_10",
+      "conceptId": "c_top_1790664766987",
+      "difficulty": "Hard",
+      "question": "Which of the following changes to the `select_from_dist` function would correctly handle a distribution where the probabilities sum to more than one, as described in the material?",
+      "options": [
+        "Normalize the probabilities by dividing each by the total sum before performing the selection.",
+        "Ignore any items whose probability exceeds 0.5 to keep the total under one.",
+        "Truncate the dictionary to the first few items until the sum is less than or equal to one.",
+        "Raise a `ValueError` if the sum of probabilities is greater than one."
+      ],
+      "correctAnswer": "Normalize the probabilities by dividing each by the total sum before performing the selection.",
+      "explanation": "The material mentions that if probabilities sum to more than one, the excess is ignored, implying that a proper implementation would normalize the distribution to ensure the total probability is 1, matching the first option.",
+      "hint": "Think about what is commonly done to a probability distribution that exceeds 1."
+    },
+    {
+      "id": "q_ai_mumv6q8g_1",
+      "conceptId": "c_top_1790664766987",
+      "difficulty": "Easy",
+      "question": "Which of the following best describes the purpose of the `Rating_set_top_subset` class in the embedding learning workflow?",
+      "options": [
+        "It extracts the most frequently rated items and then the most active users among those items to create a dense training subset",
+        "It generates synthetic ratings to augment the original dataset",
+        "It selects a random subset of users and items regardless of rating frequency",
+        "It normalizes all rating values to a 0‑1 range before training"
+      ],
+      "correctAnswer": "It extracts the most frequently rated items and then the most active users among those items to create a dense training subset",
+      "explanation": "The material explains that `Rating_set_top_subset` picks the top‑rated items and then the users with most ratings on those items, constructing a smaller but dense rating set for embedding training.",
+      "hint": "Look at how the class builds its `train` list."
+    },
+    {
+      "id": "q_ai_mumv6q8g_2",
+      "conceptId": "c_top_1790664766987",
+      "difficulty": "Medium",
+      "question": "In the `plot_property` function, what determines the horizontal axis placement of each point on the plot?",
+      "options": [
+        "The bias term associated with each user",
+        "The user’s raw rating count",
+        "The value of the specified embedding property for each user",
+        "The index order of users in the training data"
+      ],
+      "correctAnswer": "The value of the specified embedding property for each user",
+      "explanation": "The function extracts `learner.user_embs[u].vector[p]` for each user and uses that as the x‑coordinate, meaning the chosen embedding dimension (property p) determines horizontal placement.",
+      "hint": "Check which variable is passed to `ax.text` for the x‑coordinate."
+    },
+    {
+      "id": "q_ai_mumv6q8g_3",
+      "conceptId": "c_top_1790664766987",
+      "difficulty": "Hard",
+      "question": "Why might increasing the `emb_size` from 1 to 2 dramatically improve the separation of items in the 2‑D plot generated by `show2prop`?",
+      "options": [
+        "Because the plot function scales the axes differently for higher dimensions",
+        "Because two dimensions allow the model to capture orthogonal latent factors, spreading items across the plane",
+        "Because the algorithm automatically increases the learning rate when `emb_size` > 1",
+        "Because a larger embedding size adds more bias terms to each rating"
+      ],
+      "correctAnswer": "Because two dimensions allow the model to capture orthogonal latent factors, spreading items across the plane",
+      "explanation": "With `emb_size=2` each item has a vector with two components, enabling the model to represent two independent latent traits; the 2‑D scatter then shows distinct clusters that a single scalar cannot represent.",
+      "hint": "Think about what an embedding vector represents."
+    },
+    {
+      "id": "q_ai_mumv6q8g_4",
+      "conceptId": "c_top_1790664766987",
+      "difficulty": "Easy",
+      "question": "What is the effect of setting `plot_all=True` when calling `plot_property`?",
+      "options": [
+        "All training points are annotated with their rating values on the plot",
+        "Only a random sample of training points is displayed",
+        "The function disables axis labels",
+        "The function switches to a 3‑D plot"
+      ],
+      "correctAnswer": "All training points are annotated with their rating values on the plot",
+      "explanation": "The code branch under `if plot_all:` iterates over every `(u,i,r)` in `learner.training_data` and places the rating text at the corresponding coordinates, displaying every point.",
+      "hint": "Look at the conditional that checks `plot_all`."
+    },
+    {
+      "id": "q_ai_mumv6q8g_5",
+      "conceptId": "c_top_1790664766987",
+      "difficulty": "Medium",
+      "question": "During the `test_prop` routine, why are items with a score difference smaller than `score_thresh` omitted from the `picked_items` list?",
+      "options": [
+        "To enforce a minimum rating variance for evaluation",
+        "Because those items are considered duplicates and are removed from the dataset",
+        "To reduce visual clutter by avoiding points that are too close together",
+        "To ensure that only items with statistically significant scores are kept"
+      ],
+      "correctAnswer": "To reduce visual clutter by avoiding points that are too close together",
+      "explanation": "The loop adds an item to `picked_items` only when the absolute difference from the current score exceeds `score_thresh`, which spaces out the selected items on the plot and prevents overlapping labels.",
+      "hint": "Consider why the code checks `abs(current_score - fval) >= score_thresh`."
+    },
+    {
+      "id": "q_ai_mumv6q8g_6",
+      "conceptId": "c_top_1790664766987",
+      "difficulty": "Hard",
+      "question": "If the `emb_size` parameter is set to 0, what is the most likely outcome when training with `Emb_learner`?",
+      "options": [
+        "The model will train normally using only bias terms",
+        "The training will raise a division‑by‑zero error when computing gradients",
+        "All user and item vectors will be empty, causing no predictions to be made",
+        "The learning rate will automatically increase to compensate"
+      ],
+      "correctAnswer": "All user and item vectors will be empty, causing no predictions to be made",
+      "explanation": "An embedding size of 0 means no latent vector is allocated for users or items; the code would create zero‑length vectors, so the dot‑product term disappears and only biases remain, effectively preventing meaningful predictions.",
+      "hint": "Think about what a vector of length zero can store."
+    },
+    {
+      "id": "q_ai_mumv6q8g_7",
+      "conceptId": "c_top_1790664766987",
+      "difficulty": "Easy",
+      "question": "What is the primary reason for using `random.sample` when selecting top users or items in `Rating_set_top_subset`?",
+      "options": [
+        "To ensure the selected subset is deterministic across runs",
+        "To randomly choose a subset when the requested number is smaller than the available top pool",
+        "To guarantee that every user and item appears exactly once",
+        "To shuffle the entire rating dataset before training"
+      ],
+      "correctAnswer": "To randomly choose a subset when the requested number is smaller than the available top pool",
+      "explanation": "The code checks `if ni<si` (or `nu<su`) and then uses `random.sample` to pick a random subset from the top‑`si` items (or top‑`su` users), ensuring variety when fewer are needed than are available.",
+      "hint": "Observe the condition that leads to `random.sample` being called."
+    },
+    {
+      "id": "q_ai_mumv6q8g_8",
+      "conceptId": "c_top_1790664766987",
+      "difficulty": "Easy",
+      "question": "When calling `learner.learn(20)`, what does the argument `20` represent?",
+      "options": [
+        "The number of epochs (iterations) over the training data",
+        "The batch size for stochastic gradient descent",
+        "The number of embedding dimensions to use",
+        "The regularization strength applied to embeddings"
+      ],
+      "correctAnswer": "The number of epochs (iterations) over the training data",
+      "explanation": "In the material, `learn(num_epochs = 500)` is shown, and later `learner.learn(20)` is called, indicating that the integer argument specifies how many passes (epochs) the learner makes over the data.",
+      "hint": "Look for where the same parameter name appears elsewhere."
+    },
+    {
+      "id": "q_ai_mumv6q8g_9",
+      "conceptId": "c_top_1790664766987",
+      "difficulty": "Medium",
+      "question": "Why does the `show2prop` function assign items to one of nine blocks based on their two‑dimensional embedding values?",
+      "options": [
+        "To determine which items should be excluded from training",
+        "To compute a confusion matrix for classification",
+        "To visualize density regions and avoid label overlap in the scatter plot",
+        "To group items for later hierarchical clustering"
+      ],
+      "correctAnswer": "To visualize density regions and avoid label overlap in the scatter plot",
+      "explanation": "The code creates a 3×3 grid (`block`) and places each item into a block according to thresholds; this helps organize the plot and keep labels readable by separating dense areas.",
+      "hint": "Consider why the code checks thresholds on both embedding components."
+    },
+    {
+      "id": "q_ai_mumv6q8g_10",
+      "conceptId": "c_top_1790664766987",
+      "difficulty": "Medium",
+      "question": "What would be the consequence of removing the line `plt.ion()` from the plotting functions?",
+      "options": [
+        "Plots would be displayed but not updated interactively during training",
+        "No plots would be generated at all",
+        "The script would pause execution until the plot window is closed",
+        "Plots would be saved automatically to disk"
+      ],
+      "correctAnswer": "Plots would be displayed but not updated interactively during training",
+      "explanation": "`plt.ion()` enables interactive mode, allowing figures to refresh without blocking the script. Without it, the figure would appear only after the function returns or when `plt.show()` is called, reducing interactivity.",
+      "hint": "Think about what “interactive mode” does for Matplotlib."
+    },
+    {
+      "id": "q_ai_mumv6q8g_11",
+      "conceptId": "c_top_1790664766987",
+      "difficulty": "Hard",
+      "question": "In the context of the material, which statement best explains why the cumulative prediction plots (Figure 7.5) are useful for evaluating embedding models?",
+      "options": [
+        "They illustrate how well the model’s predicted distribution matches the true rating distribution across the entire dataset",
+        "They display the runtime performance of the model as iteration count increases",
+        "They show the exact numeric error for each individual rating",
+        "They provide a visual check of over‑fitting by comparing training and test curves"
+      ],
+      "correctAnswer": "They illustrate how well the model’s predicted distribution matches the true rating distribution across the entire dataset",
+      "explanation": "Cumulative proportion plots compare the cumulative distribution of predicted ratings against actual ratings for both training and test sets, revealing alignment (or mis‑alignment) of the model’s output with real data.",
+      "hint": "Focus on what a cumulative proportion curve represents."
     }
   ],
   "assessments": [
@@ -1920,9 +2236,30 @@
         "q_ai_mumol6yk_7",
         "q_ai_mumol6yk_8",
         "q_ai_mumol6yk_9",
-        "q_ai_mumol6yk_10"
+        "q_ai_mumol6yk_10",
+        "q_ai_mumuuesl_1",
+        "q_ai_mumuuesl_2",
+        "q_ai_mumuuesl_3",
+        "q_ai_mumuuesl_4",
+        "q_ai_mumuuesl_5",
+        "q_ai_mumuuesl_6",
+        "q_ai_mumuuesl_7",
+        "q_ai_mumuuesl_8",
+        "q_ai_mumuuesl_9",
+        "q_ai_mumuuesl_10",
+        "q_ai_mumv6q8g_1",
+        "q_ai_mumv6q8g_2",
+        "q_ai_mumv6q8g_3",
+        "q_ai_mumv6q8g_4",
+        "q_ai_mumv6q8g_5",
+        "q_ai_mumv6q8g_6",
+        "q_ai_mumv6q8g_7",
+        "q_ai_mumv6q8g_8",
+        "q_ai_mumv6q8g_9",
+        "q_ai_mumv6q8g_10",
+        "q_ai_mumv6q8g_11"
       ],
-      "totalQuestions": 18
+      "totalQuestions": 39
     },
     {
       "id": "asmt_c_top_1790665920648",
@@ -2347,6 +2684,73 @@
       },
       "startedAt": "2026-09-29T13:53:02.586Z",
       "completedAt": "2026-09-29T13:53:02.586Z",
+      "status": "COMPLETED"
+    },
+    {
+      "id": "att_1790691642131",
+      "studentId": "usr_1790689366091",
+      "assessmentId": "asmt_c_top_1790664766987",
+      "score": 0,
+      "totalQuestions": 3,
+      "correctAnswersCount": 0,
+      "answers": {
+        "q_ai_mumol6yk_10": "Because the model only generates punctuation marks, not words.",
+        "q_ai_mumol6yk_3": "They require complex regularization techniques to be computed.",
+        "q_ai_mumol6yk_4": "It multiplies the bias by the input value before adding it."
+      },
+      "startedAt": "2026-09-29T14:20:42.131Z",
+      "completedAt": "2026-09-29T14:20:42.131Z",
+      "status": "COMPLETED"
+    },
+    {
+      "id": "att_1790697179949",
+      "studentId": "usr_1790689366091",
+      "assessmentId": "asmt_c_top_1790664766987",
+      "score": 75,
+      "totalQuestions": 4,
+      "correctAnswersCount": 3,
+      "answers": {
+        "q_ai_mumol6yk_8": "It eliminates the need for a token‑to‑token count matrix entirely.",
+        "q_ai_mumol6yk_9": "A special blank token retrieved from the token trie is repeated to pad the context.",
+        "q_ai_mumuuesl_10": "Ignore any items whose probability exceeds 0.5 to keep the total under one.",
+        "q_ai_mumol6yk_5": "By using a separate post‑processing step that inserts spaces based on token boundaries."
+      },
+      "startedAt": "2026-09-29T15:52:59.949Z",
+      "completedAt": "2026-09-29T15:52:59.949Z",
+      "status": "COMPLETED"
+    },
+    {
+      "id": "att_1790697437293",
+      "studentId": "usr_1790689366091",
+      "assessmentId": "asmt_c_top_1790664766987",
+      "score": 0,
+      "totalQuestions": 4,
+      "correctAnswersCount": 0,
+      "answers": {
+        "q_ai_mumuuesl_1": "It modifies the original iterable by inserting the index before each element.",
+        "q_ai_mumuuesl_9": "Generators and list comprehensions are syntactically identical; the only difference is the function name.",
+        "q_ai_mumol6yk_7": "Because the algorithm sorts tokens alphabetically before counting frequencies.",
+        "q_ai_mumuuesl_6": "Initialize `maxv` to `0` instead of `-math.inf` to ignore negative values."
+      },
+      "startedAt": "2026-09-29T15:57:17.293Z",
+      "completedAt": "2026-09-29T15:57:17.293Z",
+      "status": "COMPLETED"
+    },
+    {
+      "id": "att_1790697842294",
+      "studentId": "usr_1790689366091",
+      "assessmentId": "asmt_c_top_1790664766987",
+      "score": 100,
+      "totalQuestions": 4,
+      "correctAnswersCount": 4,
+      "answers": {
+        "q_ai_mumv6q8g_1": "It extracts the most frequently rated items and then the most active users among those items to create a dense training subset",
+        "q_ai_mumv6q8g_7": "To randomly choose a subset when the requested number is smaller than the available top pool",
+        "q_ai_mumv6q8g_8": "The number of epochs (iterations) over the training data",
+        "q_ai_mumuuesl_4": "It explicitly sets the horizontal axis to use a linear scaling, overriding any previous scale setting."
+      },
+      "startedAt": "2026-09-29T16:04:02.294Z",
+      "completedAt": "2026-09-29T16:04:02.294Z",
       "status": "COMPLETED"
     }
   ],
@@ -5047,6 +5451,343 @@
       "timestamp": "2026-09-29T13:53:02.554Z",
       "isRetry": false,
       "questionType": "DIAGNOSTIC",
+      "isTransferQuestion": false,
+      "evidenceWeight": 1,
+      "gamingSignals": []
+    },
+    {
+      "id": "ev_1790691642014_u2hbg",
+      "studentId": "usr_1790689366091",
+      "conceptId": "c_top_1790664766987",
+      "questionId": "q_ai_mumol6yk_10",
+      "selectedOption": "Because the model only generates punctuation marks, not words.",
+      "correctAnswer": "Because the tokenizer already includes spaces as part of tokens where appropriate.",
+      "correct": false,
+      "difficulty": "Easy",
+      "responseTimeMs": 7114,
+      "confidence": "High",
+      "hintsUsed": 0,
+      "attemptNumber": 3,
+      "sessionId": "sess_1790691642014",
+      "timestamp": "2026-09-29T14:20:42.014Z",
+      "isRetry": false,
+      "questionType": "PRACTICE",
+      "isTransferQuestion": false,
+      "evidenceWeight": 1,
+      "gamingSignals": []
+    },
+    {
+      "id": "ev_1790691642056_gm398",
+      "studentId": "usr_1790689366091",
+      "conceptId": "c_top_1790664766987",
+      "questionId": "q_ai_mumol6yk_3",
+      "selectedOption": "They require complex regularization techniques to be computed.",
+      "correctAnswer": "They give zero probability to token pairs that never occurred in the training data.",
+      "correct": false,
+      "difficulty": "Medium",
+      "responseTimeMs": 3164,
+      "confidence": "High",
+      "hintsUsed": 0,
+      "attemptNumber": 4,
+      "sessionId": "sess_1790691642056",
+      "timestamp": "2026-09-29T14:20:42.056Z",
+      "isRetry": false,
+      "questionType": "PRACTICE",
+      "isTransferQuestion": false,
+      "evidenceWeight": 0.6,
+      "gamingSignals": [
+        "Rapid answer submitted in 3.2s (expected ≥ 3.5s)"
+      ]
+    },
+    {
+      "id": "ev_1790691642093_rr4z5",
+      "studentId": "usr_1790689366091",
+      "conceptId": "c_top_1790664766987",
+      "questionId": "q_ai_mumol6yk_4",
+      "selectedOption": "It multiplies the bias by the input value before adding it.",
+      "correctAnswer": "It adds a constant bias weight to each output unit regardless of the input.",
+      "correct": false,
+      "difficulty": "Hard",
+      "responseTimeMs": 3075,
+      "confidence": "High",
+      "hintsUsed": 0,
+      "attemptNumber": 5,
+      "sessionId": "sess_1790691642093",
+      "timestamp": "2026-09-29T14:20:42.093Z",
+      "isRetry": false,
+      "questionType": "PRACTICE",
+      "isTransferQuestion": false,
+      "evidenceWeight": 0.6,
+      "gamingSignals": [
+        "Rapid answer submitted in 3.1s (expected ≥ 6.0s)"
+      ]
+    },
+    {
+      "id": "ev_1790697179781_65gwj",
+      "studentId": "usr_1790689366091",
+      "conceptId": "c_top_1790664766987",
+      "questionId": "q_ai_mumol6yk_8",
+      "selectedOption": "It eliminates the need for a token‑to‑token count matrix entirely.",
+      "correctAnswer": "It eliminates the need for a token‑to‑token count matrix entirely.",
+      "correct": true,
+      "difficulty": "Easy",
+      "responseTimeMs": 9252,
+      "confidence": "High",
+      "hintsUsed": 0,
+      "attemptNumber": 6,
+      "sessionId": "sess_1790697179781",
+      "timestamp": "2026-09-29T15:52:59.781Z",
+      "isRetry": false,
+      "questionType": "PRACTICE",
+      "isTransferQuestion": false,
+      "evidenceWeight": 1,
+      "gamingSignals": []
+    },
+    {
+      "id": "ev_1790697179820_upi88",
+      "studentId": "usr_1790689366091",
+      "conceptId": "c_top_1790664766987",
+      "questionId": "q_ai_mumol6yk_9",
+      "selectedOption": "A special blank token retrieved from the token trie is repeated to pad the context.",
+      "correctAnswer": "A special blank token retrieved from the token trie is repeated to pad the context.",
+      "correct": true,
+      "difficulty": "Medium",
+      "responseTimeMs": 2140,
+      "confidence": "High",
+      "hintsUsed": 0,
+      "attemptNumber": 7,
+      "sessionId": "sess_1790697179820",
+      "timestamp": "2026-09-29T15:52:59.820Z",
+      "isRetry": false,
+      "questionType": "PRACTICE",
+      "isTransferQuestion": false,
+      "evidenceWeight": 0.45,
+      "gamingSignals": [
+        "Rapid answer submitted in 2.1s (expected ≥ 3.5s)"
+      ]
+    },
+    {
+      "id": "ev_1790697179858_y9h77",
+      "studentId": "usr_1790689366091",
+      "conceptId": "c_top_1790664766987",
+      "questionId": "q_ai_mumuuesl_10",
+      "selectedOption": "Ignore any items whose probability exceeds 0.5 to keep the total under one.",
+      "correctAnswer": "Normalize the probabilities by dividing each by the total sum before performing the selection.",
+      "correct": false,
+      "difficulty": "Hard",
+      "responseTimeMs": 3196,
+      "confidence": "High",
+      "hintsUsed": 0,
+      "attemptNumber": 8,
+      "sessionId": "sess_1790697179858",
+      "timestamp": "2026-09-29T15:52:59.858Z",
+      "isRetry": false,
+      "questionType": "PRACTICE",
+      "isTransferQuestion": false,
+      "evidenceWeight": 0.6,
+      "gamingSignals": [
+        "Rapid answer submitted in 3.2s (expected ≥ 6.0s)"
+      ]
+    },
+    {
+      "id": "ev_1790697179905_myiru",
+      "studentId": "usr_1790689366091",
+      "conceptId": "c_top_1790664766987",
+      "questionId": "q_ai_mumol6yk_5",
+      "selectedOption": "By using a separate post‑processing step that inserts spaces based on token boundaries.",
+      "correctAnswer": "By using a separate post‑processing step that inserts spaces based on token boundaries.",
+      "correct": true,
+      "difficulty": "Hard",
+      "responseTimeMs": 3355,
+      "confidence": "High",
+      "hintsUsed": 0,
+      "attemptNumber": 9,
+      "sessionId": "sess_1790697179905",
+      "timestamp": "2026-09-29T15:52:59.905Z",
+      "isRetry": false,
+      "questionType": "PRACTICE",
+      "isTransferQuestion": false,
+      "evidenceWeight": 0.27,
+      "gamingSignals": [
+        "Rapid answer submitted in 3.4s (expected ≥ 6.0s)",
+        "High attempt burst rate (>3 attempts within 60s)"
+      ]
+    },
+    {
+      "id": "ev_1790697437134_c9ore",
+      "studentId": "usr_1790689366091",
+      "conceptId": "c_top_1790664766987",
+      "questionId": "q_ai_mumuuesl_1",
+      "selectedOption": "It modifies the original iterable by inserting the index before each element.",
+      "correctAnswer": "It yields pairs of (index, element) starting from the provided start value and increments the index for each element.",
+      "correct": false,
+      "difficulty": "Easy",
+      "responseTimeMs": 2748,
+      "confidence": "High",
+      "hintsUsed": 0,
+      "attemptNumber": 10,
+      "sessionId": "sess_1790697437134",
+      "timestamp": "2026-09-29T15:57:17.134Z",
+      "isRetry": false,
+      "questionType": "PRACTICE",
+      "isTransferQuestion": false,
+      "evidenceWeight": 1,
+      "gamingSignals": []
+    },
+    {
+      "id": "ev_1790697437177_2ud4g",
+      "studentId": "usr_1790689366091",
+      "conceptId": "c_top_1790664766987",
+      "questionId": "q_ai_mumuuesl_9",
+      "selectedOption": "Generators and list comprehensions are syntactically identical; the only difference is the function name.",
+      "correctAnswer": "Both constructs iterate over the same range and apply identical filtering and transformation logic, producing the same sequence of values.",
+      "correct": false,
+      "difficulty": "Medium",
+      "responseTimeMs": 2700,
+      "confidence": "High",
+      "hintsUsed": 0,
+      "attemptNumber": 11,
+      "sessionId": "sess_1790697437177",
+      "timestamp": "2026-09-29T15:57:17.177Z",
+      "isRetry": false,
+      "questionType": "PRACTICE",
+      "isTransferQuestion": false,
+      "evidenceWeight": 0.6,
+      "gamingSignals": [
+        "Rapid answer submitted in 2.7s (expected ≥ 3.5s)"
+      ]
+    },
+    {
+      "id": "ev_1790697437218_wfsb4",
+      "studentId": "usr_1790689366091",
+      "conceptId": "c_top_1790664766987",
+      "questionId": "q_ai_mumol6yk_7",
+      "selectedOption": "Because the algorithm sorts tokens alphabetically before counting frequencies.",
+      "correctAnswer": "Because the bigram model counts occurrences of token pairs, and the space‑prefixed token may have more high‑frequency predecessor pairs.",
+      "correct": false,
+      "difficulty": "Hard",
+      "responseTimeMs": 3091,
+      "confidence": "High",
+      "hintsUsed": 0,
+      "attemptNumber": 12,
+      "sessionId": "sess_1790697437218",
+      "timestamp": "2026-09-29T15:57:17.218Z",
+      "isRetry": false,
+      "questionType": "PRACTICE",
+      "isTransferQuestion": false,
+      "evidenceWeight": 0.6,
+      "gamingSignals": [
+        "Rapid answer submitted in 3.1s (expected ≥ 6.0s)"
+      ]
+    },
+    {
+      "id": "ev_1790697437257_vr1w1",
+      "studentId": "usr_1790689366091",
+      "conceptId": "c_top_1790664766987",
+      "questionId": "q_ai_mumuuesl_6",
+      "selectedOption": "Initialize `maxv` to `0` instead of `-math.inf` to ignore negative values.",
+      "correctAnswer": "Replace the list `maxvals` with a single variable `max_elem` and assign it when a new maximum is found, ignoring equal values.",
+      "correct": false,
+      "difficulty": "Medium",
+      "responseTimeMs": 2148,
+      "confidence": "High",
+      "hintsUsed": 0,
+      "attemptNumber": 13,
+      "sessionId": "sess_1790697437257",
+      "timestamp": "2026-09-29T15:57:17.257Z",
+      "isRetry": false,
+      "questionType": "PRACTICE",
+      "isTransferQuestion": false,
+      "evidenceWeight": 0.36,
+      "gamingSignals": [
+        "Rapid answer submitted in 2.1s (expected ≥ 3.5s)",
+        "High attempt burst rate (>3 attempts within 60s)"
+      ]
+    },
+    {
+      "id": "ev_1790697842121_w0knd",
+      "studentId": "usr_1790689366091",
+      "conceptId": "c_top_1790664766987",
+      "questionId": "q_ai_mumv6q8g_1",
+      "selectedOption": "It extracts the most frequently rated items and then the most active users among those items to create a dense training subset",
+      "correctAnswer": "It extracts the most frequently rated items and then the most active users among those items to create a dense training subset",
+      "correct": true,
+      "difficulty": "Easy",
+      "responseTimeMs": 59863,
+      "confidence": "Low",
+      "hintsUsed": 0,
+      "attemptNumber": 14,
+      "sessionId": "sess_1790697842121",
+      "timestamp": "2026-09-29T16:04:02.121Z",
+      "isRetry": false,
+      "questionType": "PRACTICE",
+      "isTransferQuestion": false,
+      "evidenceWeight": 0.55,
+      "gamingSignals": [
+        "Correct response reported with Low learner confidence (probable lucky guess)"
+      ]
+    },
+    {
+      "id": "ev_1790697842168_1utsu",
+      "studentId": "usr_1790689366091",
+      "conceptId": "c_top_1790664766987",
+      "questionId": "q_ai_mumv6q8g_7",
+      "selectedOption": "To randomly choose a subset when the requested number is smaller than the available top pool",
+      "correctAnswer": "To randomly choose a subset when the requested number is smaller than the available top pool",
+      "correct": true,
+      "difficulty": "Easy",
+      "responseTimeMs": 30105,
+      "confidence": "Low",
+      "hintsUsed": 0,
+      "attemptNumber": 15,
+      "sessionId": "sess_1790697842168",
+      "timestamp": "2026-09-29T16:04:02.168Z",
+      "isRetry": false,
+      "questionType": "PRACTICE",
+      "isTransferQuestion": false,
+      "evidenceWeight": 0.55,
+      "gamingSignals": [
+        "Correct response reported with Low learner confidence (probable lucky guess)"
+      ]
+    },
+    {
+      "id": "ev_1790697842208_zzg7l",
+      "studentId": "usr_1790689366091",
+      "conceptId": "c_top_1790664766987",
+      "questionId": "q_ai_mumv6q8g_8",
+      "selectedOption": "The number of epochs (iterations) over the training data",
+      "correctAnswer": "The number of epochs (iterations) over the training data",
+      "correct": true,
+      "difficulty": "Easy",
+      "responseTimeMs": 14058,
+      "confidence": "High",
+      "hintsUsed": 0,
+      "attemptNumber": 16,
+      "sessionId": "sess_1790697842208",
+      "timestamp": "2026-09-29T16:04:02.208Z",
+      "isRetry": false,
+      "questionType": "PRACTICE",
+      "isTransferQuestion": false,
+      "evidenceWeight": 1,
+      "gamingSignals": []
+    },
+    {
+      "id": "ev_1790697842255_2iv37",
+      "studentId": "usr_1790689366091",
+      "conceptId": "c_top_1790664766987",
+      "questionId": "q_ai_mumuuesl_4",
+      "selectedOption": "It explicitly sets the horizontal axis to use a linear scaling, overriding any previous scale setting.",
+      "correctAnswer": "It explicitly sets the horizontal axis to use a linear scaling, overriding any previous scale setting.",
+      "correct": true,
+      "difficulty": "Medium",
+      "responseTimeMs": 11270,
+      "confidence": "High",
+      "hintsUsed": 0,
+      "attemptNumber": 17,
+      "sessionId": "sess_1790697842255",
+      "timestamp": "2026-09-29T16:04:02.255Z",
+      "isRetry": false,
+      "questionType": "PRACTICE",
       "isTransferQuestion": false,
       "evidenceWeight": 1,
       "gamingSignals": []
@@ -26346,6 +27087,1596 @@
       ],
       "timestamp": "2026-09-29T14:07:40.983Z",
       "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790691372374_cw3lr",
+      "studentId": "usr_1790689366091",
+      "action": "PRACTICE",
+      "targetConceptId": "c_top_1790664766987",
+      "targetConceptName": "Python Basics",
+      "reason": "Current mastery (40%) is developing. Core derivations and guided problems required.",
+      "decisionFactors": {
+        "mastery": 40,
+        "uncertainty": "Medium",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 1,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 60,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 50,
+        "recentErrors": 1,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 11087,
+        "independentEvidenceCount": 2,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 80,
+          "reason": "Current mastery (40%) is developing. Core derivations and guided problems required.",
+          "valid": true
+        }
+      ],
+      "alternatives": [],
+      "confidence": "Medium",
+      "decisionVersion": "2.4.0-zone",
+      "inputEvidenceIds": [
+        "ev_1790689982516_hfl89",
+        "ev_1790689982554_0rblm"
+      ],
+      "timestamp": "2026-09-29T14:16:12.374Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790691372400_wb4lj",
+      "studentId": "usr_1790689366091",
+      "action": "PRACTICE",
+      "targetConceptId": "c_top_1790664766987",
+      "targetConceptName": "Python Basics",
+      "reason": "Current mastery (40%) is developing. Core derivations and guided problems required.",
+      "decisionFactors": {
+        "mastery": 40,
+        "uncertainty": "Medium",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 1,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 60,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 50,
+        "recentErrors": 1,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 11087,
+        "independentEvidenceCount": 2,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 80,
+          "reason": "Current mastery (40%) is developing. Core derivations and guided problems required.",
+          "valid": true
+        }
+      ],
+      "alternatives": [],
+      "confidence": "Medium",
+      "decisionVersion": "2.4.0-zone",
+      "inputEvidenceIds": [
+        "ev_1790689982516_hfl89",
+        "ev_1790689982554_0rblm"
+      ],
+      "timestamp": "2026-09-29T14:16:12.400Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790691372439_cy9qj",
+      "studentId": "usr_1790689366091",
+      "action": "PRACTICE",
+      "targetConceptId": "c_top_1790664766987",
+      "targetConceptName": "Python Basics",
+      "reason": "Current mastery (40%) is developing. Core derivations and guided problems required.",
+      "decisionFactors": {
+        "mastery": 40,
+        "uncertainty": "Medium",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 1,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 60,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 50,
+        "recentErrors": 1,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 11087,
+        "independentEvidenceCount": 2,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 80,
+          "reason": "Current mastery (40%) is developing. Core derivations and guided problems required.",
+          "valid": true
+        }
+      ],
+      "alternatives": [],
+      "confidence": "Medium",
+      "decisionVersion": "2.4.0-zone",
+      "inputEvidenceIds": [
+        "ev_1790689982516_hfl89",
+        "ev_1790689982554_0rblm"
+      ],
+      "timestamp": "2026-09-29T14:16:12.439Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790691372464_on5r0",
+      "studentId": "usr_1790689366091",
+      "action": "PRACTICE",
+      "targetConceptId": "c_top_1790664766987",
+      "targetConceptName": "Python Basics",
+      "reason": "Current mastery (40%) is developing. Core derivations and guided problems required.",
+      "decisionFactors": {
+        "mastery": 40,
+        "uncertainty": "Medium",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 1,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 60,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 50,
+        "recentErrors": 1,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 11087,
+        "independentEvidenceCount": 2,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 80,
+          "reason": "Current mastery (40%) is developing. Core derivations and guided problems required.",
+          "valid": true
+        }
+      ],
+      "alternatives": [],
+      "confidence": "Medium",
+      "decisionVersion": "2.4.0-zone",
+      "inputEvidenceIds": [
+        "ev_1790689982516_hfl89",
+        "ev_1790689982554_0rblm"
+      ],
+      "timestamp": "2026-09-29T14:16:12.464Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790691463971_5anzg",
+      "studentId": "usr_1790689366091",
+      "action": "PRACTICE",
+      "targetConceptId": "c_top_1790664766987",
+      "targetConceptName": "Python Basics",
+      "reason": "Current mastery (40%) is developing. Core derivations and guided problems required.",
+      "decisionFactors": {
+        "mastery": 40,
+        "uncertainty": "Medium",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 1,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 60,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 50,
+        "recentErrors": 1,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 11087,
+        "independentEvidenceCount": 2,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 80,
+          "reason": "Current mastery (40%) is developing. Core derivations and guided problems required.",
+          "valid": true
+        }
+      ],
+      "alternatives": [],
+      "confidence": "Medium",
+      "decisionVersion": "2.4.0-zone",
+      "inputEvidenceIds": [
+        "ev_1790689982516_hfl89",
+        "ev_1790689982554_0rblm"
+      ],
+      "timestamp": "2026-09-29T14:17:43.971Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790691463985_9fpmb",
+      "studentId": "usr_1790689366091",
+      "action": "PRACTICE",
+      "targetConceptId": "c_top_1790664766987",
+      "targetConceptName": "Python Basics",
+      "reason": "Current mastery (40%) is developing. Core derivations and guided problems required.",
+      "decisionFactors": {
+        "mastery": 40,
+        "uncertainty": "Medium",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 1,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 60,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 50,
+        "recentErrors": 1,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 11087,
+        "independentEvidenceCount": 2,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 80,
+          "reason": "Current mastery (40%) is developing. Core derivations and guided problems required.",
+          "valid": true
+        }
+      ],
+      "alternatives": [],
+      "confidence": "Medium",
+      "decisionVersion": "2.4.0-zone",
+      "inputEvidenceIds": [
+        "ev_1790689982516_hfl89",
+        "ev_1790689982554_0rblm"
+      ],
+      "timestamp": "2026-09-29T14:17:43.985Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790691464003_gzdwi",
+      "studentId": "usr_1790689366091",
+      "action": "PRACTICE",
+      "targetConceptId": "c_top_1790664766987",
+      "targetConceptName": "Python Basics",
+      "reason": "Current mastery (40%) is developing. Core derivations and guided problems required.",
+      "decisionFactors": {
+        "mastery": 40,
+        "uncertainty": "Medium",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 1,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 60,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 50,
+        "recentErrors": 1,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 11087,
+        "independentEvidenceCount": 2,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 80,
+          "reason": "Current mastery (40%) is developing. Core derivations and guided problems required.",
+          "valid": true
+        }
+      ],
+      "alternatives": [],
+      "confidence": "Medium",
+      "decisionVersion": "2.4.0-zone",
+      "inputEvidenceIds": [
+        "ev_1790689982516_hfl89",
+        "ev_1790689982554_0rblm"
+      ],
+      "timestamp": "2026-09-29T14:17:44.003Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790691464015_ifiy8",
+      "studentId": "usr_1790689366091",
+      "action": "PRACTICE",
+      "targetConceptId": "c_top_1790664766987",
+      "targetConceptName": "Python Basics",
+      "reason": "Current mastery (40%) is developing. Core derivations and guided problems required.",
+      "decisionFactors": {
+        "mastery": 40,
+        "uncertainty": "Medium",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 1,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 60,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 50,
+        "recentErrors": 1,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 11087,
+        "independentEvidenceCount": 2,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 80,
+          "reason": "Current mastery (40%) is developing. Core derivations and guided problems required.",
+          "valid": true
+        }
+      ],
+      "alternatives": [],
+      "confidence": "Medium",
+      "decisionVersion": "2.4.0-zone",
+      "inputEvidenceIds": [
+        "ev_1790689982516_hfl89",
+        "ev_1790689982554_0rblm"
+      ],
+      "timestamp": "2026-09-29T14:17:44.015Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790691475070_c3qbu",
+      "studentId": "usr_1790689366091",
+      "action": "PRACTICE",
+      "targetConceptId": "c_top_1790664766987",
+      "targetConceptName": "Python Basics",
+      "reason": "Current mastery (40%) is developing. Core derivations and guided problems required.",
+      "decisionFactors": {
+        "mastery": 40,
+        "uncertainty": "Medium",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 1,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 60,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 50,
+        "recentErrors": 1,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 11087,
+        "independentEvidenceCount": 2,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 80,
+          "reason": "Current mastery (40%) is developing. Core derivations and guided problems required.",
+          "valid": true
+        }
+      ],
+      "alternatives": [],
+      "confidence": "Medium",
+      "decisionVersion": "2.4.0-zone",
+      "inputEvidenceIds": [
+        "ev_1790689982516_hfl89",
+        "ev_1790689982554_0rblm"
+      ],
+      "timestamp": "2026-09-29T14:17:55.070Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790691475104_di2if",
+      "studentId": "usr_1790689366091",
+      "action": "PRACTICE",
+      "targetConceptId": "c_top_1790664766987",
+      "targetConceptName": "Python Basics",
+      "reason": "Current mastery (40%) is developing. Core derivations and guided problems required.",
+      "decisionFactors": {
+        "mastery": 40,
+        "uncertainty": "Medium",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 1,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 60,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 50,
+        "recentErrors": 1,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 11087,
+        "independentEvidenceCount": 2,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 80,
+          "reason": "Current mastery (40%) is developing. Core derivations and guided problems required.",
+          "valid": true
+        }
+      ],
+      "alternatives": [],
+      "confidence": "Medium",
+      "decisionVersion": "2.4.0-zone",
+      "inputEvidenceIds": [
+        "ev_1790689982516_hfl89",
+        "ev_1790689982554_0rblm"
+      ],
+      "timestamp": "2026-09-29T14:17:55.104Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790691475156_zgkc5",
+      "studentId": "usr_1790689366091",
+      "action": "PRACTICE",
+      "targetConceptId": "c_top_1790664766987",
+      "targetConceptName": "Python Basics",
+      "reason": "Current mastery (40%) is developing. Core derivations and guided problems required.",
+      "decisionFactors": {
+        "mastery": 40,
+        "uncertainty": "Medium",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 1,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 60,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 50,
+        "recentErrors": 1,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 11087,
+        "independentEvidenceCount": 2,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 80,
+          "reason": "Current mastery (40%) is developing. Core derivations and guided problems required.",
+          "valid": true
+        }
+      ],
+      "alternatives": [],
+      "confidence": "Medium",
+      "decisionVersion": "2.4.0-zone",
+      "inputEvidenceIds": [
+        "ev_1790689982516_hfl89",
+        "ev_1790689982554_0rblm"
+      ],
+      "timestamp": "2026-09-29T14:17:55.156Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790691475189_mf73w",
+      "studentId": "usr_1790689366091",
+      "action": "PRACTICE",
+      "targetConceptId": "c_top_1790664766987",
+      "targetConceptName": "Python Basics",
+      "reason": "Current mastery (40%) is developing. Core derivations and guided problems required.",
+      "decisionFactors": {
+        "mastery": 40,
+        "uncertainty": "Medium",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 1,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 60,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 50,
+        "recentErrors": 1,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 11087,
+        "independentEvidenceCount": 2,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 80,
+          "reason": "Current mastery (40%) is developing. Core derivations and guided problems required.",
+          "valid": true
+        }
+      ],
+      "alternatives": [],
+      "confidence": "Medium",
+      "decisionVersion": "2.4.0-zone",
+      "inputEvidenceIds": [
+        "ev_1790689982516_hfl89",
+        "ev_1790689982554_0rblm"
+      ],
+      "timestamp": "2026-09-29T14:17:55.189Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790691642156_gk29f",
+      "studentId": "usr_1790689366091",
+      "action": "PRACTICE",
+      "targetConceptId": "c_top_1790664766987",
+      "targetConceptName": "Python Basics",
+      "reason": "Current mastery (9%) is developing. Core derivations and guided problems required.",
+      "decisionFactors": {
+        "mastery": 9,
+        "uncertainty": "Medium",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 4,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 78,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 0,
+        "recentErrors": 4,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 7105,
+        "independentEvidenceCount": 3,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 80,
+          "reason": "Current mastery (9%) is developing. Core derivations and guided problems required.",
+          "valid": true
+        }
+      ],
+      "alternatives": [],
+      "confidence": "Medium",
+      "decisionVersion": "2.4.0-zone",
+      "inputEvidenceIds": [
+        "ev_1790689982516_hfl89",
+        "ev_1790689982554_0rblm",
+        "ev_1790691642014_u2hbg",
+        "ev_1790691642056_gm398",
+        "ev_1790691642093_rr4z5"
+      ],
+      "timestamp": "2026-09-29T14:20:42.156Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790695928902_wkg42",
+      "studentId": "usr_1790689366091",
+      "action": "PRACTICE",
+      "targetConceptId": "c_top_1790664766987",
+      "targetConceptName": "Python Basics",
+      "reason": "Current mastery (9%) is developing. Core derivations and guided problems required.",
+      "decisionFactors": {
+        "mastery": 9,
+        "uncertainty": "Medium",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 4,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 78,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 0,
+        "recentErrors": 4,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 7105,
+        "independentEvidenceCount": 3,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 80,
+          "reason": "Current mastery (9%) is developing. Core derivations and guided problems required.",
+          "valid": true
+        }
+      ],
+      "alternatives": [],
+      "confidence": "Medium",
+      "decisionVersion": "2.4.0-zone",
+      "inputEvidenceIds": [
+        "ev_1790689982516_hfl89",
+        "ev_1790689982554_0rblm",
+        "ev_1790691642014_u2hbg",
+        "ev_1790691642056_gm398",
+        "ev_1790691642093_rr4z5"
+      ],
+      "timestamp": "2026-09-29T15:32:08.902Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790695928949_bf6bd",
+      "studentId": "usr_1790689366091",
+      "action": "PRACTICE",
+      "targetConceptId": "c_top_1790664766987",
+      "targetConceptName": "Python Basics",
+      "reason": "Current mastery (9%) is developing. Core derivations and guided problems required.",
+      "decisionFactors": {
+        "mastery": 9,
+        "uncertainty": "Medium",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 4,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 78,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 0,
+        "recentErrors": 4,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 7105,
+        "independentEvidenceCount": 3,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 80,
+          "reason": "Current mastery (9%) is developing. Core derivations and guided problems required.",
+          "valid": true
+        }
+      ],
+      "alternatives": [],
+      "confidence": "Medium",
+      "decisionVersion": "2.4.0-zone",
+      "inputEvidenceIds": [
+        "ev_1790689982516_hfl89",
+        "ev_1790689982554_0rblm",
+        "ev_1790691642014_u2hbg",
+        "ev_1790691642056_gm398",
+        "ev_1790691642093_rr4z5"
+      ],
+      "timestamp": "2026-09-29T15:32:08.949Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790695929622_f6s27",
+      "studentId": "usr_1790689366091",
+      "action": "PRACTICE",
+      "targetConceptId": "c_top_1790664766987",
+      "targetConceptName": "Python Basics",
+      "reason": "Current mastery (9%) is developing. Core derivations and guided problems required.",
+      "decisionFactors": {
+        "mastery": 9,
+        "uncertainty": "Medium",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 4,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 78,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 0,
+        "recentErrors": 4,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 7105,
+        "independentEvidenceCount": 3,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 80,
+          "reason": "Current mastery (9%) is developing. Core derivations and guided problems required.",
+          "valid": true
+        }
+      ],
+      "alternatives": [],
+      "confidence": "Medium",
+      "decisionVersion": "2.4.0-zone",
+      "inputEvidenceIds": [
+        "ev_1790689982516_hfl89",
+        "ev_1790689982554_0rblm",
+        "ev_1790691642014_u2hbg",
+        "ev_1790691642056_gm398",
+        "ev_1790691642093_rr4z5"
+      ],
+      "timestamp": "2026-09-29T15:32:09.622Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790695929665_1hwsu",
+      "studentId": "usr_1790689366091",
+      "action": "PRACTICE",
+      "targetConceptId": "c_top_1790664766987",
+      "targetConceptName": "Python Basics",
+      "reason": "Current mastery (9%) is developing. Core derivations and guided problems required.",
+      "decisionFactors": {
+        "mastery": 9,
+        "uncertainty": "Medium",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 4,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 78,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 0,
+        "recentErrors": 4,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 7105,
+        "independentEvidenceCount": 3,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 80,
+          "reason": "Current mastery (9%) is developing. Core derivations and guided problems required.",
+          "valid": true
+        }
+      ],
+      "alternatives": [],
+      "confidence": "Medium",
+      "decisionVersion": "2.4.0-zone",
+      "inputEvidenceIds": [
+        "ev_1790689982516_hfl89",
+        "ev_1790689982554_0rblm",
+        "ev_1790691642014_u2hbg",
+        "ev_1790691642056_gm398",
+        "ev_1790691642093_rr4z5"
+      ],
+      "timestamp": "2026-09-29T15:32:09.665Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790697179979_a7q44",
+      "studentId": "usr_1790689366091",
+      "action": "PRACTICE",
+      "targetConceptId": "c_top_1790664766987",
+      "targetConceptName": "Python Basics",
+      "reason": "Current mastery (49%) is developing. Core derivations and guided problems required.",
+      "decisionFactors": {
+        "mastery": 49,
+        "uncertainty": "Medium",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 1,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 83,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 67,
+        "recentErrors": 1,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 5941,
+        "independentEvidenceCount": 4,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 80,
+          "reason": "Current mastery (49%) is developing. Core derivations and guided problems required.",
+          "valid": true
+        }
+      ],
+      "alternatives": [],
+      "confidence": "Medium",
+      "decisionVersion": "2.4.0-zone",
+      "inputEvidenceIds": [
+        "ev_1790689982516_hfl89",
+        "ev_1790689982554_0rblm",
+        "ev_1790691642014_u2hbg",
+        "ev_1790691642056_gm398",
+        "ev_1790691642093_rr4z5",
+        "ev_1790697179781_65gwj",
+        "ev_1790697179820_upi88",
+        "ev_1790697179858_y9h77",
+        "ev_1790697179905_myiru"
+      ],
+      "timestamp": "2026-09-29T15:52:59.979Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790697191643_yuv2o",
+      "studentId": "usr_1790689366091",
+      "action": "PRACTICE",
+      "targetConceptId": "c_top_1790664766987",
+      "targetConceptName": "Python Basics",
+      "reason": "Current mastery (49%) is developing. Core derivations and guided problems required.",
+      "decisionFactors": {
+        "mastery": 49,
+        "uncertainty": "Medium",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 1,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 83,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 67,
+        "recentErrors": 1,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 5941,
+        "independentEvidenceCount": 4,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 80,
+          "reason": "Current mastery (49%) is developing. Core derivations and guided problems required.",
+          "valid": true
+        }
+      ],
+      "alternatives": [],
+      "confidence": "Medium",
+      "decisionVersion": "2.4.0-zone",
+      "inputEvidenceIds": [
+        "ev_1790689982516_hfl89",
+        "ev_1790689982554_0rblm",
+        "ev_1790691642014_u2hbg",
+        "ev_1790691642056_gm398",
+        "ev_1790691642093_rr4z5",
+        "ev_1790697179781_65gwj",
+        "ev_1790697179820_upi88",
+        "ev_1790697179858_y9h77",
+        "ev_1790697179905_myiru"
+      ],
+      "timestamp": "2026-09-29T15:53:11.643Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790697191673_2ogmq",
+      "studentId": "usr_1790689366091",
+      "action": "PRACTICE",
+      "targetConceptId": "c_top_1790664766987",
+      "targetConceptName": "Python Basics",
+      "reason": "Current mastery (49%) is developing. Core derivations and guided problems required.",
+      "decisionFactors": {
+        "mastery": 49,
+        "uncertainty": "Medium",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 1,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 83,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 67,
+        "recentErrors": 1,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 5941,
+        "independentEvidenceCount": 4,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 80,
+          "reason": "Current mastery (49%) is developing. Core derivations and guided problems required.",
+          "valid": true
+        }
+      ],
+      "alternatives": [],
+      "confidence": "Medium",
+      "decisionVersion": "2.4.0-zone",
+      "inputEvidenceIds": [
+        "ev_1790689982516_hfl89",
+        "ev_1790689982554_0rblm",
+        "ev_1790691642014_u2hbg",
+        "ev_1790691642056_gm398",
+        "ev_1790691642093_rr4z5",
+        "ev_1790697179781_65gwj",
+        "ev_1790697179820_upi88",
+        "ev_1790697179858_y9h77",
+        "ev_1790697179905_myiru"
+      ],
+      "timestamp": "2026-09-29T15:53:11.673Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790697437320_baq7l",
+      "studentId": "usr_1790689366091",
+      "action": "PRACTICE",
+      "targetConceptId": "c_top_1790664766987",
+      "targetConceptName": "Python Basics",
+      "reason": "Current mastery (13%) is developing. Core derivations and guided problems required.",
+      "decisionFactors": {
+        "mastery": 13,
+        "uncertainty": "Low",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 4,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 85,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 0,
+        "recentErrors": 4,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 4935,
+        "independentEvidenceCount": 5,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 80,
+          "reason": "Current mastery (13%) is developing. Core derivations and guided problems required.",
+          "valid": true
+        }
+      ],
+      "alternatives": [],
+      "confidence": "Medium",
+      "decisionVersion": "2.4.0-zone",
+      "inputEvidenceIds": [
+        "ev_1790689982516_hfl89",
+        "ev_1790689982554_0rblm",
+        "ev_1790691642014_u2hbg",
+        "ev_1790691642056_gm398",
+        "ev_1790691642093_rr4z5",
+        "ev_1790697179781_65gwj",
+        "ev_1790697179820_upi88",
+        "ev_1790697179858_y9h77",
+        "ev_1790697179905_myiru",
+        "ev_1790697437134_c9ore",
+        "ev_1790697437177_2ud4g",
+        "ev_1790697437218_wfsb4",
+        "ev_1790697437257_vr1w1"
+      ],
+      "timestamp": "2026-09-29T15:57:17.321Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790697442136_yah2b",
+      "studentId": "usr_1790689366091",
+      "action": "PRACTICE",
+      "targetConceptId": "c_top_1790664766987",
+      "targetConceptName": "Python Basics",
+      "reason": "Current mastery (13%) is developing. Core derivations and guided problems required.",
+      "decisionFactors": {
+        "mastery": 13,
+        "uncertainty": "Low",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 4,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 85,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 0,
+        "recentErrors": 4,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 4935,
+        "independentEvidenceCount": 5,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 80,
+          "reason": "Current mastery (13%) is developing. Core derivations and guided problems required.",
+          "valid": true
+        }
+      ],
+      "alternatives": [],
+      "confidence": "Medium",
+      "decisionVersion": "2.4.0-zone",
+      "inputEvidenceIds": [
+        "ev_1790689982516_hfl89",
+        "ev_1790689982554_0rblm",
+        "ev_1790691642014_u2hbg",
+        "ev_1790691642056_gm398",
+        "ev_1790691642093_rr4z5",
+        "ev_1790697179781_65gwj",
+        "ev_1790697179820_upi88",
+        "ev_1790697179858_y9h77",
+        "ev_1790697179905_myiru",
+        "ev_1790697437134_c9ore",
+        "ev_1790697437177_2ud4g",
+        "ev_1790697437218_wfsb4",
+        "ev_1790697437257_vr1w1"
+      ],
+      "timestamp": "2026-09-29T15:57:22.136Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790697442167_2daof",
+      "studentId": "usr_1790689366091",
+      "action": "PRACTICE",
+      "targetConceptId": "c_top_1790664766987",
+      "targetConceptName": "Python Basics",
+      "reason": "Current mastery (13%) is developing. Core derivations and guided problems required.",
+      "decisionFactors": {
+        "mastery": 13,
+        "uncertainty": "Low",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 4,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 85,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 0,
+        "recentErrors": 4,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 4935,
+        "independentEvidenceCount": 5,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 80,
+          "reason": "Current mastery (13%) is developing. Core derivations and guided problems required.",
+          "valid": true
+        }
+      ],
+      "alternatives": [],
+      "confidence": "Medium",
+      "decisionVersion": "2.4.0-zone",
+      "inputEvidenceIds": [
+        "ev_1790689982516_hfl89",
+        "ev_1790689982554_0rblm",
+        "ev_1790691642014_u2hbg",
+        "ev_1790691642056_gm398",
+        "ev_1790691642093_rr4z5",
+        "ev_1790697179781_65gwj",
+        "ev_1790697179820_upi88",
+        "ev_1790697179858_y9h77",
+        "ev_1790697179905_myiru",
+        "ev_1790697437134_c9ore",
+        "ev_1790697437177_2ud4g",
+        "ev_1790697437218_wfsb4",
+        "ev_1790697437257_vr1w1"
+      ],
+      "timestamp": "2026-09-29T15:57:22.167Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790697499317_mofoi",
+      "studentId": "usr_1790689366091",
+      "action": "TEACHER_INTERVENTION",
+      "targetConceptId": "c_top_1790664766987",
+      "targetConceptName": "Python Basics",
+      "reason": "Ask your teacher about Python Basics: stuck at 13% after 13 attempts; four recent errors.",
+      "decisionFactors": {
+        "mastery": 13,
+        "uncertainty": "Low",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 4,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 85,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 0,
+        "recentErrors": 4,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 4935,
+        "independentEvidenceCount": 5,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "TEACHER_INTERVENTION",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 88,
+          "reason": "Ask your teacher about Python Basics: stuck at 13% after 13 attempts; four recent errors.",
+          "valid": true
+        },
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 80,
+          "reason": "Practice Python Basics: mastery 13% (target 75%); four recent errors.",
+          "valid": true
+        }
+      ],
+      "alternatives": [
+        "PRACTICE on Python Basics (Score: 80)"
+      ],
+      "confidence": "Medium",
+      "decisionVersion": "3.0.0-zone",
+      "inputEvidenceIds": [
+        "ev_1790689982516_hfl89",
+        "ev_1790689982554_0rblm",
+        "ev_1790691642014_u2hbg",
+        "ev_1790691642056_gm398",
+        "ev_1790691642093_rr4z5",
+        "ev_1790697179781_65gwj",
+        "ev_1790697179820_upi88",
+        "ev_1790697179858_y9h77",
+        "ev_1790697179905_myiru",
+        "ev_1790697437134_c9ore",
+        "ev_1790697437177_2ud4g",
+        "ev_1790697437218_wfsb4",
+        "ev_1790697437257_vr1w1"
+      ],
+      "timestamp": "2026-09-29T15:58:19.317Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790697842348_e6vto",
+      "studentId": "usr_1790689366091",
+      "action": "PRACTICE",
+      "targetConceptId": "c_top_1790664766987",
+      "targetConceptName": "Python Basics",
+      "reason": "Practice Python Basics: mastery 74% (target 75%).",
+      "decisionFactors": {
+        "mastery": 74,
+        "uncertainty": "Low",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 0,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 79,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 100,
+        "recentErrors": 0,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 10556,
+        "independentEvidenceCount": 7,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 80,
+          "reason": "Practice Python Basics: mastery 74% (target 75%).",
+          "valid": true
+        }
+      ],
+      "alternatives": [],
+      "confidence": "Medium",
+      "decisionVersion": "3.0.0-zone",
+      "inputEvidenceIds": [
+        "ev_1790689982516_hfl89",
+        "ev_1790689982554_0rblm",
+        "ev_1790691642014_u2hbg",
+        "ev_1790691642056_gm398",
+        "ev_1790691642093_rr4z5",
+        "ev_1790697179781_65gwj",
+        "ev_1790697179820_upi88",
+        "ev_1790697179858_y9h77",
+        "ev_1790697179905_myiru",
+        "ev_1790697437134_c9ore",
+        "ev_1790697437177_2ud4g",
+        "ev_1790697437218_wfsb4",
+        "ev_1790697437257_vr1w1",
+        "ev_1790697842121_w0knd",
+        "ev_1790697842168_1utsu",
+        "ev_1790697842208_zzg7l",
+        "ev_1790697842255_2iv37"
+      ],
+      "timestamp": "2026-09-29T16:04:02.348Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790698417984_t5zn4",
+      "studentId": "usr_1790664039243",
+      "action": "TEACHER_INTERVENTION",
+      "targetConceptId": "c_top_1790664766987",
+      "targetConceptName": "Python Basics",
+      "reason": "Ask your teacher about Python Basics: stuck at 30% after 39 attempts; three recent errors.",
+      "decisionFactors": {
+        "mastery": 30,
+        "uncertainty": "Low",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 3,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 53,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 33,
+        "recentErrors": 3,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 11138,
+        "independentEvidenceCount": 19,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "TEACHER_INTERVENTION",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 88,
+          "reason": "Ask your teacher about Python Basics: stuck at 30% after 39 attempts; three recent errors.",
+          "valid": true
+        },
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 80,
+          "reason": "Practice Python Basics: mastery 30% (target 75%); three recent errors.",
+          "valid": true
+        }
+      ],
+      "alternatives": [
+        "PRACTICE on Python Basics (Score: 80)"
+      ],
+      "confidence": "Medium",
+      "decisionVersion": "3.0.0-zone",
+      "inputEvidenceIds": [
+        "ev_1790665287893_dtglm",
+        "ev_1790665287905_ehorf",
+        "ev_1790665287912_6jzbr",
+        "ev_1790665287923_qahtb",
+        "ev_1790665287935_ov06v",
+        "ev_1790665287950_97kgb",
+        "ev_1790665287964_xxl88",
+        "ev_1790665287974_4czlt",
+        "ev_1790665397899_zc8pk",
+        "ev_1790665397911_3yygg",
+        "ev_1790665397920_qje7l",
+        "ev_1790665397930_zlu8d",
+        "ev_1790665397940_vnycf",
+        "ev_1790665397952_fikly",
+        "ev_1790665397963_xlin9",
+        "ev_1790665397973_og9cq",
+        "ev_1790679598553_86d8o",
+        "ev_1790679598592_wittb",
+        "ev_1790679598621_ur72t",
+        "ev_1790679598653_k05b0",
+        "ev_1790679598684_197u6",
+        "ev_1790679598719_z128f",
+        "ev_1790679598752_7wwfe",
+        "ev_1790679598781_fr6c7",
+        "ev_1790680508416_p4vu4",
+        "ev_1790680508454_4tfqb",
+        "ev_1790680508488_lxthi",
+        "ev_1790680508532_3l6jr",
+        "ev_1790680508567_9l5to",
+        "ev_1790680508600_t0tpk",
+        "ev_1790680508632_3dl61",
+        "ev_1790680508676_exaab",
+        "ev_1790685000682_vng3g",
+        "ev_1790685000716_uoged",
+        "ev_1790685000749_r49ou",
+        "ev_1790686671376_h9qjo",
+        "ev_1790686671416_zl5uc",
+        "ev_1790686671461_c04b0",
+        "ev_1790686671507_r0ji2"
+      ],
+      "timestamp": "2026-09-29T16:13:37.984Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790698418014_on1hp",
+      "studentId": "usr_1790665764130",
+      "action": "PRACTICE",
+      "targetConceptId": "c_top_1790665920648",
+      "targetConceptName": "Cloud Computing Fundamentals",
+      "reason": "Practice Cloud Computing Fundamentals: mastery 55% (target 75%); one recent error.",
+      "decisionFactors": {
+        "mastery": 55,
+        "uncertainty": "Low",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 1,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 45,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 67,
+        "recentErrors": 1,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 12000,
+        "independentEvidenceCount": 5,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "c_top_1790665920648",
+          "targetConceptName": "Cloud Computing Fundamentals",
+          "score": 80,
+          "reason": "Practice Cloud Computing Fundamentals: mastery 55% (target 75%); one recent error.",
+          "valid": true
+        }
+      ],
+      "alternatives": [],
+      "confidence": "Medium",
+      "decisionVersion": "3.0.0-zone",
+      "inputEvidenceIds": [
+        "ev_1790666189503_d4r03",
+        "ev_1790666189513_aai6v",
+        "ev_1790666189524_7q1mg",
+        "ev_1790666189534_7q2mx",
+        "ev_1790666189543_l6bbe",
+        "ev_1790666189555_l60np",
+        "ev_1790666189569_ou4ga",
+        "ev_1790666189582_3n1vm",
+        "ev_1790673517639_4vege",
+        "ev_1790673517649_534oy",
+        "ev_1790673517658_pwhdl",
+        "ev_1790673517666_wscw9",
+        "ev_1790673517676_w3lpi",
+        "ev_1790673517685_em21m",
+        "ev_1790673517695_1sxae",
+        "ev_1790673517705_3lmjr"
+      ],
+      "timestamp": "2026-09-29T16:13:38.014Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790698418029_1t8z9",
+      "studentId": "usr_1790674537338",
+      "action": "TEACHER_INTERVENTION",
+      "targetConceptId": "c_top_1790664766987",
+      "targetConceptName": "Python Basics",
+      "reason": "Ask your teacher about Python Basics: stuck at 9% after 56 attempts; four recent errors.",
+      "decisionFactors": {
+        "mastery": 9,
+        "uncertainty": "Low",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 4,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 30,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 0,
+        "recentErrors": 4,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 12000,
+        "independentEvidenceCount": 9,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "TEACHER_INTERVENTION",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 88,
+          "reason": "Ask your teacher about Python Basics: stuck at 9% after 56 attempts; four recent errors.",
+          "valid": true
+        },
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "c_top_1790664766987",
+          "targetConceptName": "Python Basics",
+          "score": 80,
+          "reason": "Practice Python Basics: mastery 9% (target 75%); four recent errors.",
+          "valid": true
+        }
+      ],
+      "alternatives": [
+        "PRACTICE on Python Basics (Score: 80)"
+      ],
+      "confidence": "Medium",
+      "decisionVersion": "3.0.0-zone",
+      "inputEvidenceIds": [
+        "ev_1790676080401_qwgz4",
+        "ev_1790676080421_h1kmr",
+        "ev_1790676080437_x44js",
+        "ev_1790676080455_9vg8x",
+        "ev_1790676080472_sif48",
+        "ev_1790676080486_ljyi2",
+        "ev_1790676080498_5fls7",
+        "ev_1790676080512_g4hu3",
+        "ev_1790677860988_4ny05",
+        "ev_1790677861005_3rn25",
+        "ev_1790677861019_t8uod",
+        "ev_1790677861037_5d6vk",
+        "ev_1790677861056_bxguw",
+        "ev_1790677861077_f62m1",
+        "ev_1790677861096_9urzo",
+        "ev_1790677861115_s6ukm",
+        "ev_1790677896335_3xs2m",
+        "ev_1790677896357_msihx",
+        "ev_1790677896376_m1egx",
+        "ev_1790677896395_tmyjl",
+        "ev_1790677896413_uh1co",
+        "ev_1790677896432_zbtdm",
+        "ev_1790677896449_541nt",
+        "ev_1790677896466_lohap",
+        "ev_1790678265783_bqkdc",
+        "ev_1790678265807_xayeu",
+        "ev_1790678265827_epkmg",
+        "ev_1790678265848_7gpmq",
+        "ev_1790678265870_m9rd3",
+        "ev_1790678265891_2x8oz",
+        "ev_1790678265915_7cb5p",
+        "ev_1790678265936_sgqj2",
+        "ev_1790678298098_26pbh",
+        "ev_1790678298123_n1fbm",
+        "ev_1790678298151_rd9f2",
+        "ev_1790678298172_eosd5",
+        "ev_1790678298193_7rrr2",
+        "ev_1790678298214_1ympw",
+        "ev_1790678298236_86m10",
+        "ev_1790678298257_5rlsw",
+        "ev_1790678323801_i2gao",
+        "ev_1790678323818_05abe",
+        "ev_1790678323841_xn9e7",
+        "ev_1790678323864_csdla",
+        "ev_1790678323886_gnobb",
+        "ev_1790678323908_37c4u",
+        "ev_1790678323929_3gkfz",
+        "ev_1790678323949_bqtd4",
+        "ev_1790678371956_w1jdv",
+        "ev_1790678371977_echey",
+        "ev_1790678371998_w2m8m",
+        "ev_1790678372021_wsieg",
+        "ev_1790678372044_xlhrj",
+        "ev_1790678372068_udij7",
+        "ev_1790678372090_0uhtt",
+        "ev_1790678372113_gohzw"
+      ],
+      "timestamp": "2026-09-29T16:13:38.029Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790698882908_0bla1",
+      "studentId": "usr_1790664214916",
+      "action": "PRACTICE",
+      "targetConceptId": "",
+      "targetConceptName": "No class content",
+      "reason": "Practice No class content: mastery 0% (target 75%).",
+      "decisionFactors": {
+        "mastery": 0,
+        "uncertainty": "High",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 0,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 60,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 0,
+        "recentErrors": 0,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 12000,
+        "independentEvidenceCount": 0,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "",
+          "targetConceptName": "No class content",
+          "score": 80,
+          "reason": "Practice No class content: mastery 0% (target 75%).",
+          "valid": true
+        }
+      ],
+      "alternatives": [],
+      "confidence": "Low",
+      "decisionVersion": "3.0.0-zone",
+      "inputEvidenceIds": [],
+      "timestamp": "2026-09-29T16:21:22.908Z",
+      "teacherOverridden": false
     }
   ],
   "teacherOverrides": [],
@@ -26404,7 +28735,7 @@
       "conceptId": "c_top_1790664766987",
       "conceptName": "Python Basics",
       "createdAt": "2026-09-29T13:53:20.959Z",
-      "updatedAt": "2026-09-29T13:53:36.050Z"
+      "updatedAt": "2026-09-29T15:38:50.239Z"
     }
   ],
   "tutorMessages": [
@@ -27215,6 +29546,62 @@
       "sender": "TUTOR",
       "content": "Here’s a quick step‑by‑step walk‑through of the **Python Basics** material.\n\n## 1. Start the interactive Python shell  \n- Open a terminal (command prompt).  \n- Type `python` **or** `python3` and press **Enter**.  \n- You’ll see the prompt `>>>` – this is the interactive shell where you can type statements and see results instantly.  \n\n## 2. Choose how to run Python  \n- **IDE option:** launch IDLE (comes with the standard Python installation).  \n- **IPython option:** type `ipython` (or `ipython3`) for an enhanced interactive experience.  \n- **Direct shell:** just use `python` / `python3` as above.  \n\n## 3. Understand the special variable `__name__`  \n- Every module (a `.py` file) has a built‑in variable called `__name__`.  \n- When you run a file directly, `__name__` equals `\"__main__\"`.  \n- Example in the shell:  \n\n```python\n>>> __name__\n'__main__'\n```  \n\n## 4. Install / upgrade needed packages  \n- You need **Python 3** (download from the official site).  \n- To upgrade a library like **matplotlib**, run:  \n\n```bash\npip install --upgrade matplotlib\n```  \n\n## 5. Practice the interactive workflow  \n- Type simple statements and see immediate output, e.g.:  \n\n```python\n>>> 2 + 3\n5\n>>> print(\"Hello, world!\")\nHello, world!\n```  \n\n- This mirrors pseudo‑code, making it easy to translate ideas into real code.  \n\n**Next step:** Open your terminal, start the interactive shell, and try the example statements above.",
       "timestamp": "2026-09-29T13:53:36.050Z"
+    },
+    {
+      "id": "msg_1790691497838_u",
+      "conversationId": "conv_1790690000959",
+      "sender": "USER",
+      "content": "Explain Python Basics step by step with clear analogies and practical examples.",
+      "timestamp": "2026-09-29T14:18:17.838Z"
+    },
+    {
+      "id": "msg_1790691499013_t",
+      "conversationId": "conv_1790690000959",
+      "sender": "TUTOR",
+      "content": "Here’s a concise walk‑through of the basics that appear in the class material.\n\n## 1. Starting Python  \n- Open a terminal (or command prompt).  \n- Type `python` **or** `python3` and press **Enter**.  \n- You’ll see the prompt `>>>` – this is the **interactive Python shell** where you can type statements and see results instantly.  \n\n## 2. Running a script file  \n- Write your code in a text file, e.g., `script.py`.  \n- From the terminal run `python script.py` (or `python3 script.py`).  \n\n## 3. Tools you can use  \n- **IDLE** – the simple IDE that ships with standard Python.  \n- **IPython** – an enhanced interactive shell (`ipython` or `ipython3`).  \n\n## 4. Simple example in the shell  \n```python\n>>> name = \"Alice\"\n>>> print(\"Hello,\", name)\nHello, Alice\n```\n- The assignment `name = \"Alice\"` stores a value.  \n- `print()` displays output, just like reading a line from a recipe.\n\n**Next step:** Try opening the interactive shell and typing the example above.",
+      "timestamp": "2026-09-29T14:18:19.013Z"
+    },
+    {
+      "id": "msg_1790691650108_u",
+      "conversationId": "conv_1790690000959",
+      "sender": "USER",
+      "content": "I missed this question on my assessment: \"In the described One_Hot_Layer, what is the effect of the line that adds the bias term to the output calculation?\". I answered \"It multiplies the bias by the input value before adding it.\", but the correct answer is \"It adds a constant bias weight to each output unit regardless of the input.\". Can you explain why \"It adds a constant bias weight to each output unit regardless of the input.\" is correct and how I can avoid this mistake?",
+      "timestamp": "2026-09-29T14:20:50.108Z"
+    },
+    {
+      "id": "msg_1790691651777_t",
+      "conversationId": "conv_1790690000959",
+      "sender": "TUTOR",
+      "content": "Here’s why the bias is added as a **constant term** for each output unit.\n\n## What the code does\n- In `Linear_complete_layer` (the parent of `One_Hot_Layer`) the bias is **treated implicitly as the last input**.\n- When the forward pass computes the output, it does something like  \n\n```python\noutput = np.dot(weights, inputs) + bias_weight\n```\n\n- Because the bias input is always **1**, the product `bias_weight * 1` is just `bias_weight`.\n\n## Why the bias is constant\n- **Constant input**: The “bias neuron” never changes; its value is fixed at 1.\n- **Weight only**: The only thing that can vary is the weight attached to that bias neuron.\n- Therefore each output unit receives **the same added amount** (`bias_weight`) no matter what the real data inputs are.\n\n## Common misconception\n- Saying *“it multiplies the bias by the input value”* would be true only if the bias input varied with the data, which it does not. The bias input is always 1, so multiplication does nothing—what really happens is a simple addition of the bias weight.\n\n## How to avoid the mistake\n- **Remember the bias neuron is a constant 1** in most neural‑network implementations.\n- When you see “bias is treated implicitly as the last input,” translate it to: *add a fixed offset to each unit*.\n- Visualize the computation:  \n\n```\noutput_i = Σ (w_ij * x_j)   +   b_i   (where b_i = weight_of_bias_neuron)\n```\n\n  The `Σ` part depends on the data; `b_i` does not.\n\n**Next step:** Review the `Linear_complete_layer` definition and trace how the bias weight is added in the forward method.",
+      "timestamp": "2026-09-29T14:20:51.777Z"
+    },
+    {
+      "id": "msg_1790696324666_u",
+      "conversationId": "conv_1790690000959",
+      "sender": "USER",
+      "content": "Explain Python Basics step by step with clear analogies and practical examples.",
+      "timestamp": "2026-09-29T15:38:44.666Z"
+    },
+    {
+      "id": "msg_1790696326473_t",
+      "conversationId": "conv_1790690000959",
+      "sender": "TUTOR",
+      "content": "Here’s a friendly walk‑through of the **Python Basics** that the class material actually covers.\n\n## 1. Launching Python – think of turning on a calculator  \n- Open a terminal (Command Prompt, PowerShell, or your OS’s shell).  \n- Type `python` **or** `python3` and press **Enter**.  \n- You’ll see the prompt `>>>`. This is the interactive “calculator” where each line you type is evaluated immediately.\n\n## 2. Running a script – like writing a recipe and then cooking it  \n- Write your code in a text file, e.g., `my_script.py`.  \n- From the same terminal run  \n\n```bash\npython my_script.py\n# or\npython3 my_script.py\n```  \n\n- The file is read, executed line‑by‑line, and any output appears in the terminal.\n\n## 3. Using an IDE – a kitchen with tools ready for you  \n- The standard Python distribution includes **IDLE** (an IDE).  \n- Open IDLE, type code in its editor, and press **F5** to run the whole file.  \n- Alternatively, you can start **IPython** (`ipython` or `ipython3`) for a richer interactive shell with history and tab‑completion.\n\n## 4. Basic interactive commands – “press‑enter” actions  \n- **Print a value**: `print(\"Hello, world!\")` → shows the text.  \n- **Simple math**: `2 + 3 * 4` → returns `14`.  \n- **Assign a variable**: `x = 10` stores a value you can reuse later.\n\n**Key terms**: **interactive shell**, **script file**, **IDE**, **IDLE**, **IPython**.\n\n**Next step:** Open your terminal, type `python`, and try a few `print` and arithmetic statements.",
+      "timestamp": "2026-09-29T15:38:46.473Z"
+    },
+    {
+      "id": "msg_1790696328494_u",
+      "conversationId": "conv_1790690000959",
+      "sender": "USER",
+      "content": "Explain Python Basics step by step with clear analogies and practical examples.",
+      "timestamp": "2026-09-29T15:38:48.494Z"
+    },
+    {
+      "id": "msg_1790696330239_t",
+      "conversationId": "conv_1790690000959",
+      "sender": "TUTOR",
+      "content": "Here’s a friendly, step‑by‑step walk‑through of the **Python basics** that appear in your class material.\n\n## 1. Starting the interactive Python shell  \n- **Analogy:** Turning on a calculator that shows results instantly.  \n- Open a terminal (Command Prompt, PowerShell, or any shell).  \n- Type `python` **or** `python3` and press **Enter**.  \n- You’ll see the prompt `>>>` – the live “calculator” where each line you type is evaluated right away.\n\n## 2. Writing a script file  \n- **Analogy:** Writing a recipe on paper, then cooking it all at once.  \n- Create a text file, e.g., `script.py`, and put Python statements inside.  \n- Run the whole recipe with:  \n\n```bash\npython script.py      # or python3 script.py\n```\n\n## 3. Simple statements you can try  \n- **Print output:**  \n\n```python\nprint(\"Hello, world!\")\n```\n\n- **Variables and arithmetic:**  \n\n```python\nx = 5          # store a number\ny = x * 2      # use it in a calculation\nprint(y)       # shows 10\n```\n\n- **Loops with a custom range generator (shown in the material):**  \n\n```python\ndef myrange(start, stop, step=1):\n    assert step > 0, f\"only positive steps implemented in myrange: {step}\"\n    i = start\n    while i < stop:\n        yield i\n        i += step\n\nprint(list(myrange(2, 30, 3)))   # [2, 5, 8, 11, 14, 17, 20, 23, 26, 29]\n```\n\n## 4. Running code in the shell vs. script  \n- In the **shell** (`>>>`) you type one line, see the result, then type another.  \n- In a **script** you write many lines, save the file, and run it once; the whole program executes together.\n\n**Next step:** Open your terminal, launch `python`, and try the `print` and `myrange` examples above.",
+      "timestamp": "2026-09-29T15:38:50.239Z"
     }
   ],
   "retentionRecords": [
@@ -27247,6 +29634,21 @@
       "daysSincePractice": 0,
       "status": "Healthy",
       "nextScheduledReview": "2026-10-09T09:34:35.170Z"
+    },
+    {
+      "id": "ret_usr_1790689366091_c_top_1790664766987",
+      "studentId": "usr_1790689366091",
+      "conceptId": "c_top_1790664766987",
+      "conceptName": "Python Basics",
+      "subjectName": "Python for AI",
+      "learnedAt": "2026-09-29T16:04:02.268Z",
+      "lastPracticedAt": "2026-09-29T16:04:02.268Z",
+      "practiceCount": 17,
+      "masteryScore": 74,
+      "reviewCount": 0,
+      "daysSincePractice": 0,
+      "status": "Healthy",
+      "nextScheduledReview": "2026-10-06T16:04:02.307Z"
     }
   ],
   "learningGoals": [],
@@ -27269,6 +29671,22 @@
       "suggestedAction": "Assign targeted practice on Foundational Definitions",
       "status": "In Progress",
       "createdAt": "2026-09-29T09:59:00.049Z"
+    },
+    {
+      "id": "int_Cloud Service Models — IaaS, PaaS, SaaS",
+      "topicName": "Cloud Service Models — IaaS, PaaS, SaaS",
+      "concept": "Cloud Service Models — IaaS, PaaS, SaaS",
+      "groupName": "Cloud Service Models — IaaS, PaaS, SaaS Remediation Cohort",
+      "severity": "LOW",
+      "affectedStudents": [
+        "sanjay"
+      ],
+      "affectedCount": 1,
+      "issue": "Knowledge gap detected in Cloud Service Models — IaaS, PaaS, SaaS",
+      "reason": "Knowledge gap detected in Cloud Service Models — IaaS, PaaS, SaaS",
+      "suggestedAction": "Assign targeted practice on Cloud Service Models — IaaS, PaaS, SaaS",
+      "status": "In Progress",
+      "createdAt": "2026-09-29T16:13:57.404Z"
     }
   ],
   "classrooms": [
@@ -27375,5 +29793,8 @@
       "timestamp": "2026-09-29T14:08:24.196Z",
       "readAt": "2026-09-29T14:08:26.359Z"
     }
-  ]
+  ],
+  "parentPhones": {
+    "usr_1790664039243": "919344490870"
+  }
 }

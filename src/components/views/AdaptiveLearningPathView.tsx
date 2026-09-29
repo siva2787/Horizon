@@ -9,6 +9,8 @@ import {
   BookOpen,
   HelpCircle,
   FileText,
+  UserCog,
+  History,
 } from 'lucide-react';
 import { AdaptiveLearningPath } from '../../types.ts';
 
@@ -24,6 +26,15 @@ export const AdaptiveLearningPathView: React.FC<AdaptiveLearningPathViewProps> =
   onStartLesson,
 }) => {
   const steps = path?.steps || [];
+  const pa: any = path || {};
+  const decision: any = pa.currentDecision;
+  const overrideTarget = decision?.teacherOverridden ? decision.targetConceptId : undefined;
+  const history: any[] = (pa.history || []).filter((e: any) => e.type === 'TEACHER_OVERRIDE' || e.type === 'OVERRIDE_REVOKED' || e.type === 'OVERRIDE_FULFILLED');
+  const LABEL: Record<string, string> = {
+    TEACHER_OVERRIDE: 'Teacher changed your path',
+    OVERRIDE_REVOKED: 'Teacher restored automatic path',
+    OVERRIDE_FULFILLED: 'Override completed, automatic path resumed',
+  };
 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
@@ -48,6 +59,16 @@ export const AdaptiveLearningPathView: React.FC<AdaptiveLearningPathViewProps> =
         </div>
       </div>
 
+      {overrideTarget && (
+        <div className="flex items-start gap-3 p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-950">
+          <UserCog className="w-5 h-5 text-amber-700 shrink-0" />
+          <div>
+            <div className="font-bold">Your teacher updated your path</div>
+            <div className="text-amber-800">{decision.reason}</div>
+          </div>
+        </div>
+      )}
+
       {/* Path List View (Screen 11 from Reference) */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xs space-y-8">
         <div className="space-y-6">
@@ -60,26 +81,24 @@ export const AdaptiveLearningPathView: React.FC<AdaptiveLearningPathViewProps> =
             return (
               <div
                 key={step.conceptId}
-                className={`relative flex flex-col md:flex-row md:items-center justify-between p-5 rounded-2xl border transition-all ${
-                  isInProgress || isNext
+                className={`relative flex flex-col md:flex-row md:items-center justify-between p-5 rounded-2xl border transition-all ${isInProgress || isNext
                     ? 'border-indigo-400 bg-indigo-50/40 shadow-xs ring-2 ring-indigo-500/10'
                     : isCompleted
-                    ? 'border-slate-200 bg-white hover:bg-slate-50/80'
-                    : 'border-slate-200/80 bg-slate-50/50 opacity-70'
-                }`}
+                      ? 'border-slate-200 bg-white hover:bg-slate-50/80'
+                      : 'border-slate-200/80 bg-slate-50/50 opacity-70'
+                  }`}
               >
                 <div className="flex items-start gap-4">
                   {/* Status Indicator Icon */}
                   <div
-                    className={`w-10 h-10 rounded-xl shrink-0 flex items-center justify-center font-bold text-xs ${
-                      isCompleted
+                    className={`w-10 h-10 rounded-xl shrink-0 flex items-center justify-center font-bold text-xs ${isCompleted
                         ? 'bg-emerald-100 text-emerald-700'
                         : isInProgress
-                        ? 'bg-indigo-600 text-white shadow-xs'
-                        : isNext
-                        ? 'bg-amber-100 text-amber-800 border border-amber-300'
-                        : 'bg-slate-200 text-slate-500'
-                    }`}
+                          ? 'bg-indigo-600 text-white shadow-xs'
+                          : isNext
+                            ? 'bg-amber-100 text-amber-800 border border-amber-300'
+                            : 'bg-slate-200 text-slate-500'
+                      }`}
                   >
                     {isCompleted ? (
                       <CheckCircle2 className="w-5 h-5" />
@@ -102,18 +121,22 @@ export const AdaptiveLearningPathView: React.FC<AdaptiveLearningPathViewProps> =
                         {step.conceptName}
                       </h3>
                       <span
-                        className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                          isCompleted
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${isCompleted
                             ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                             : isInProgress
-                            ? 'bg-indigo-100 text-indigo-800'
-                            : isNext
-                            ? 'bg-amber-100 text-amber-800'
-                            : 'bg-slate-100 text-slate-500'
-                        }`}
+                              ? 'bg-indigo-100 text-indigo-800'
+                              : isNext
+                                ? 'bg-amber-100 text-amber-800'
+                                : 'bg-slate-100 text-slate-500'
+                          }`}
                       >
                         {step.status}
                       </span>
+                      {overrideTarget === step.conceptId && (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
+                          Teacher override
+                        </span>
+                      )}
                     </div>
 
                     <p className="text-xs text-slate-500 leading-relaxed">
@@ -152,13 +175,12 @@ export const AdaptiveLearningPathView: React.FC<AdaptiveLearningPathViewProps> =
                       })
                     }
                     disabled={isLocked}
-                    className={`px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-1.5 ${
-                      isInProgress || isNext
+                    className={`px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-1.5 ${isInProgress || isNext
                         ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs'
                         : isCompleted
-                        ? 'bg-slate-100 hover:bg-slate-200 text-slate-700'
-                        : 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                    }`}
+                          ? 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                          : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                      }`}
                   >
                     <span>{isCompleted ? 'Review' : isInProgress ? 'Continue' : isNext ? 'Start Next' : 'Locked'}</span>
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -169,6 +191,31 @@ export const AdaptiveLearningPathView: React.FC<AdaptiveLearningPathViewProps> =
           })}
         </div>
       </div>
+
+      {history.length > 0 && (
+        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-3">
+          <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+            <History className="w-4 h-4 text-indigo-600" />
+            Path change history
+          </h2>
+          <div className="space-y-2">
+            {history.map((e: any) => (
+              <div key={e.id} className="p-3 rounded-xl border border-slate-100 bg-slate-50/60 text-xs">
+                <div className="flex justify-between gap-2">
+                  <span className="font-bold text-slate-800">{LABEL[e.type] || e.type}</span>
+                  <span className="text-slate-400">{new Date(e.timestamp).toLocaleString()}</span>
+                </div>
+                {e.from && e.to && (
+                  <div className="text-slate-600">
+                    {e.from.conceptName} → {e.to.conceptName}
+                  </div>
+                )}
+                {e.reason && <div className="text-slate-500">{e.reason}</div>}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

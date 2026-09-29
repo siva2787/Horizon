@@ -8,7 +8,7 @@ import { detectKnowledgeGaps } from './src/server/engines/knowledge-gap-engine.t
 import { generateAdaptiveLearningPath, generateLearningPathItems } from './src/server/engines/adaptive-path-engine.ts';
 import { calculateRetentionHealth, recordPracticeSession } from './src/server/engines/retention-engine.ts';
 import { recordAttemptEvidence, getStudentEvidence } from './src/server/engines/evidence-engine.ts';
-import { evaluateNextAction, replayDecision } from './src/server/engines/decision-engine.ts';
+import { evaluateNextAction, replayDecision, logPathEvent } from './src/server/engines/decision-engine.ts';
 import { evaluatePrerequisiteReadiness } from './src/server/engines/prerequisite-engine.ts';
 import {
   createTeacherOverride,
@@ -23,7 +23,7 @@ import { aiEnabled, aiGenerate, withinBudget } from './src/server/ai-client.ts';
 import { generateQuizFromMaterial, ensureFreshQuestions, pickQuizSet } from './src/server/ai-quiz-service.ts';
 import fs from 'fs';
 import { planQuiz } from './src/server/quiz-planner.ts';
-import type { Question } from './types.ts';
+import type { Question } from './src/types.ts';
 import { registerChat } from './src/server/chat.ts';
 
 try {
@@ -33,6 +33,14 @@ try {
 }
 
 async function startServer() {
+  await db.restoreFromCloud();
+  const shutdown = async () => {
+    db.save();
+    await db.flushCloud();
+    process.exit(0);
+  };
+  process.on('SIGINT', shutdown);
+  process.on('SIGTERM', shutdown);
   const app = express();
   const PORT = 3000;
 
@@ -91,7 +99,7 @@ async function startServer() {
     return db.getTeacherStudentIds(uid(req)).has(id) ? id : '';
   };
 
-  const DIAG_OPEN = ['/diagnostic', '/classes', '/learning-twin', '/progress', '/goals', '/notifications', '/assistant', '/chat'];
+  const DIAG_OPEN = ['/diagnostic', '/classes', '/learning-twin', '/progress', '/goals', '/notifications', '/assistant', '/chat', '/activity'];
 
   app.use('/api', (req, res, next) => {
     (req as any).uid = sessions.get(getSid(req)) || '';
@@ -1194,10 +1202,97 @@ async function startServer() {
   });
 
   // =================== ADAPTIVE LEARNING PATH ===================
+  const overrideConcepts = (req: any, studentId: string) => {
+    const own = db.getStudentConcepts(studentId);
+    if (roleOf(req) !== 'TEACHER') return own;
+    const subs = db.getTeacherSubjectIds(uid(req));
+    const seen = new Set(own.map((c) => c.id));
+    const extra = db.getState().concepts.filter((c) => subs.has(c.subjectId) && !seen.has(c.id));
+    return [...own, ...db.orderConcepts(extra)];
+  };
+
   app.get('/api/learning-path', (req, res) => {
-    const studentId = uid(req);
+    const requested = req.query.studentId as string | undefined;
+    const studentId = requested ? resolveStudent(req, requested) : uid(req);
+    if (!studentId) return res.status(403).json({ error: 'forbidden' });
     const path = generateAdaptiveLearningPath(studentId);
-    res.json(path);
+    const st = db.getState() as any;
+    const history = ((st.pathEvents || []) as any[])
+      .filter((e) => e.studentId === studentId)
+      .slice(-100)
+      .reverse();
+    const decisions = (st.decisionRecords || [])
+      .filter((d: any) => d.studentId === studentId)
+      .slice(-50)
+      .reverse()
+      .map((d: any) => ({
+        id: d.id,
+        action: d.action,
+        targetConceptId: d.targetConceptId,
+        targetConceptName: d.targetConceptName,
+        reason: d.reason,
+        teacherOverridden: d.teacherOverridden,
+        timestamp: d.timestamp,
+      }));
+    const activeOverrides = (st.teacherOverrides || []).filter((o: any) => o.studentId === studentId && o.active);
+    const classConcepts = overrideConcepts(req, studentId).map((c) => ({ conceptId: c.id, conceptName: c.name }));
+    res.json({ ...path, classConcepts, history, decisions, activeOverrides });
+  });
+
+  // =================== PARENT REPORTS ===================
+  app.get('/api/teacher/parent-reports', (req, res) => {
+    const state: any = db.getState();
+    const phones = state.parentPhones || {};
+    const ids = db.getTeacherStudentIds(uid(req));
+    const myClasses = state.classrooms.filter((c: any) => c.teacherId === uid(req));
+    res.json(
+      [...ids].map((id) => {
+        const u = state.users.find((x: any) => x.id === id);
+        const twin: any = state.learningTwins.find((t: any) => t.studentId === id) || {};
+        const gaps = state.knowledgeGaps.filter((g: any) => g.studentId === id && g.status !== 'RESOLVED');
+        const cls = myClasses
+          .filter((c: any) => state.classMembers.some((m: any) => m.classId === c.id && m.studentId === id))
+          .map((c: any) => c.name);
+        return {
+          studentId: id,
+          name: u?.name || '',
+          parentPhone: phones[id] || '',
+          classes: cls,
+          mastery: Math.round(twin.overallMastery || 0),
+          mastered: twin.conceptsMasteredCount || 0,
+          assessments: twin.assessmentsCompletedCount || 0,
+          avgScore: Math.round(twin.avgAssessmentScore || 0),
+          gapCount: gaps.length,
+          gaps: gaps.slice(0, 3).map((g: any) => g.conceptName || g.conceptId),
+        };
+      })
+    );
+  });
+
+  app.post('/api/teacher/parent-phone', (req, res) => {
+    const { studentId, phone } = req.body || {};
+    if (!db.getTeacherStudentIds(uid(req)).has(studentId)) {
+      return res.status(403).json({ message: 'Not your student' });
+    }
+    let digits = String(phone || '').replace(/\D/g, '');
+    if (digits.length === 10) digits = '91' + digits;
+    if (digits && (digits.length < 11 || digits.length > 15)) {
+      return res.status(400).json({ message: 'Invalid phone number' });
+    }
+    const state: any = db.getState();
+    state.parentPhones ||= {};
+    if (digits) state.parentPhones[studentId] = digits;
+    else delete state.parentPhones[studentId];
+    db.save();
+    res.json({ parentPhone: digits });
+  });
+
+  // =================== CLOUD BACKUP ===================
+  app.get('/api/teacher/backup/status', (_req, res) => res.json(db.getCloudStatus()));
+  app.post('/api/teacher/backup/now', async (_req, res) => res.json(await db.backupNow()));
+  app.post('/api/teacher/backup/restore', async (_req, res) => {
+    const r = await db.restoreNow();
+    res.status(r.ok ? 200 : 400).json({ success: r.ok, message: r.message, status: db.getCloudStatus() });
   });
 
   // =================== RETENTION & REVISION ===================
@@ -1344,24 +1439,70 @@ async function startServer() {
 
   // =================== TEACHER OVERRIDES & AUDIT ===================
   app.post('/api/teacher/override', (req, res) => {
-    const { studentId, conceptId, originalAction, overriddenAction, reason, decisionId } = req.body;
-    if (!conceptId || !reason) return res.status(400).json({ success: false, message: 'conceptId and reason are required' });
-    const override = createTeacherOverride({
-      studentId: studentId,
-      conceptId,
+    const { studentId, conceptId, targetConceptId, originalAction, overriddenAction, reason, decisionId } = req.body;
+    if (!studentId || !reason || !(conceptId || targetConceptId)) {
+      return res.status(400).json({ success: false, message: 'studentId, reason and conceptId or targetConceptId are required' });
+    }
+    if (!db.getTeacherStudentIds(uid(req)).has(studentId)) {
+      return res.status(403).json({ success: false, message: 'not your student' });
+    }
+    const concepts = overrideConcepts(req, studentId);
+    if (targetConceptId && !concepts.some((c) => c.id === targetConceptId)) {
+      return res.status(400).json({ success: false, message: 'invalid targetConceptId' });
+    }
+    const state = db.getState() as any;
+    const before = evaluateNextAction({ studentId });
+    const nameOf = (id?: string) => concepts.find((c) => c.id === id)?.name || '';
+    const newAction = overriddenAction || (targetConceptId ? 'PRACTICE' : before.action);
+
+    if (targetConceptId) {
+      for (const o of state.teacherOverrides || []) {
+        if (o.studentId === studentId && o.active && o.targetConceptId) {
+          o.active = false;
+          o.supersededAt = new Date().toISOString();
+          logPathEvent({ type: 'OVERRIDE_SUPERSEDED', studentId, teacherId: uid(req), overrideId: o.id });
+        }
+      }
+    }
+
+    const override: any = createTeacherOverride({
+      studentId,
+      conceptId: conceptId || before.targetConceptId,
       teacherId: uid(req),
-      originalAction,
-      overriddenAction,
+      originalAction: originalAction || before.action,
+      overriddenAction: newAction,
       reason,
-      decisionId,
+      decisionId: decisionId || before.id,
+    } as any);
+    const stored = (state.teacherOverrides || []).find((o: any) => o.id === override.id) || override;
+    Object.assign(stored, {
+      targetConceptId: targetConceptId || undefined,
+      originalTargetConceptId: before.targetConceptId,
+      originalTargetName: before.targetConceptName,
     });
 
-    const updatedDecision = evaluateNextAction({
-      studentId: studentId,
-      focusConceptId: conceptId,
+    logPathEvent({
+      type: 'TEACHER_OVERRIDE',
+      studentId,
+      teacherId: uid(req),
+      overrideId: stored.id,
+      from: { conceptId: before.targetConceptId, conceptName: before.targetConceptName, action: before.action },
+      to: {
+        conceptId: targetConceptId || before.targetConceptId,
+        conceptName: nameOf(targetConceptId) || before.targetConceptName,
+        action: newAction,
+      },
+      reason,
     });
+    db.save();
 
-    res.json({ success: true, override, updatedDecision });
+    const updatedDecision = evaluateNextAction({ studentId });
+    res.json({
+      success: true,
+      override: stored,
+      updatedDecision,
+      path: generateAdaptiveLearningPath(studentId),
+    });
   });
 
   app.get('/api/teacher/overrides', (req, res) => {
@@ -1371,7 +1512,23 @@ async function startServer() {
   });
 
   app.delete('/api/teacher/override/:id', (req, res) => {
+    const state = db.getState() as any;
+    const o = (state.teacherOverrides || []).find((x: any) => x.id === req.params.id);
+    if (!o) return res.status(404).json({ success: false });
+    if (!db.getTeacherStudentIds(uid(req)).has(o.studentId)) return res.status(403).json({ success: false });
     const success = revokeTeacherOverride(req.params.id);
+    o.active = false;
+    o.revokedAt = new Date().toISOString();
+    logPathEvent({
+      type: 'OVERRIDE_REVOKED',
+      studentId: o.studentId,
+      teacherId: uid(req),
+      overrideId: o.id,
+      to: { conceptId: o.targetConceptId || o.conceptId },
+      reason: 'Teacher revoked override; system path resumed',
+    });
+    db.save();
+    evaluateNextAction({ studentId: o.studentId });
     res.json({ success });
   });
 
@@ -1743,14 +1900,64 @@ async function startServer() {
     res.json({ success: true, intervention: item });
   });
 
+  // =================== ACTIVE TIME TRACKING ===================
+  const ACT_FILE = path.join(process.cwd(), 'data', 'activity.json');
+  let activity: Record<string, Record<string, number>> = {};
+  try {
+    activity = JSON.parse(fs.readFileSync(ACT_FILE, 'utf-8'));
+  } catch {
+    activity = {};
+  }
+  const lastPing = new Map<string, number>();
+  let actDirty = false;
+  setInterval(() => {
+    if (!actDirty) return;
+    actDirty = false;
+    try {
+      fs.mkdirSync(path.dirname(ACT_FILE), { recursive: true });
+      fs.writeFileSync(ACT_FILE, JSON.stringify(activity));
+    } catch { }
+  }, 15000).unref();
+  const dayKey = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  app.post('/api/activity/ping', (req, res) => {
+    const id = uid(req);
+    const now = Date.now();
+    const prev = lastPing.get(id);
+    lastPing.set(id, now);
+    const add = prev ? Math.min(Math.max((now - prev) / 1000, 0), 60) : 0;
+    if (add > 0) {
+      const k = dayKey(new Date(now));
+      const u = (activity[id] ||= {});
+      u[k] = (u[k] || 0) + add;
+      actDirty = true;
+    }
+    res.json({ ok: true });
+  });
+
   // =================== PROGRESS & ANALYTICS ===================
   app.get('/api/progress', (req, res) => {
     const studentId = uid(req);
     const twin = updateTwinMastery(studentId);
     const state = db.getState();
+    const days = Math.max(0, Math.floor(Number(req.query.days) || 0));
+    const cutoff = days ? new Date(new Date().setHours(0, 0, 0, 0) - (days - 1) * 86400000).getTime() : 0;
+    const inRange = (a: any) => {
+      const t = Date.parse(a.completedAt || a.startedAt);
+      return !cutoff || (!isNaN(t) && t >= cutoff);
+    };
+    const completed = state.assessmentAttempts.filter(
+      (a) => a.studentId === studentId && a.status === 'COMPLETED'
+    );
+    const inRangeCompleted = completed.filter(inRange);
+    const activeSeconds = Object.entries(activity[studentId] || {}).reduce((sum, [k, v]) => {
+      const [y, m, d] = k.split('-').map(Number);
+      return !cutoff || new Date(y, m - 1, d).getTime() >= cutoff ? sum + v : sum;
+    }, 0);
+    const activeMinutes = Math.round(activeSeconds / 60);
+    const spanDays = days || Math.max(1, Object.keys(activity[studentId] || {}).length);
 
-    const masteryTrend = state.assessmentAttempts
-      .filter((a) => a.studentId === studentId && a.status === 'COMPLETED')
+    const masteryTrend = inRangeCompleted
       .sort((a, b) => (a.completedAt || a.startedAt).localeCompare(b.completedAt || b.startedAt))
       .map((a, idx) => ({
         day: new Date(a.completedAt || a.startedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
@@ -1758,6 +1965,27 @@ async function startServer() {
         attempt: idx + 1,
       }));
 
+    const perAssessment = new Map<string, number>();
+    const attempts = completed
+      .slice()
+      .sort((a, b) => (a.completedAt || a.startedAt).localeCompare(b.completedAt || b.startedAt))
+      .map((a) => {
+        const n = (perAssessment.get(a.assessmentId) || 0) + 1;
+        perAssessment.set(a.assessmentId, n);
+        const asmt: any = state.assessments.find((x) => x.id === a.assessmentId);
+        return {
+          id: a.id,
+          topic: asmt?.title || (a.assessmentId === 'asmt_diag' ? 'Diagnostic Assessment' : 'Assessment'),
+          score: a.score,
+          attempt: n,
+          date: a.completedAt || a.startedAt,
+          _in: inRange(a),
+        };
+      })
+      .filter((a) => a._in)
+      .map(({ _in, ...rest }) => rest);
+
+    const rangeScores = inRangeCompleted.map((a) => a.score);
     const subjectProgress = db.getStudentSubjects(studentId).map((sub) => ({
       name: sub.name,
       mastery: twin.subjectMastery[sub.id] || 0,
@@ -1766,11 +1994,17 @@ async function startServer() {
 
     res.json({
       overallMastery: twin.overallMastery,
-      learningHours: twin.totalStudyHours,
+      activeMinutes,
+      hoursPerDay: Math.round((activeSeconds / 3600 / spanDays) * 10) / 10,
       conceptsMastered: twin.conceptsMasteredCount,
-      assessmentsCount: twin.assessmentsCompletedCount,
-      avgScore: twin.avgAssessmentScore,
+      assessmentsCount: days ? rangeScores.length : twin.assessmentsCompletedCount,
+      avgScore: days
+        ? rangeScores.length
+          ? Math.round(rangeScores.reduce((x, y) => x + y, 0) / rangeScores.length)
+          : 0
+        : twin.avgAssessmentScore,
       masteryTrend,
+      attempts,
       subjectProgress,
     });
   });

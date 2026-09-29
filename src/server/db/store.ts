@@ -670,8 +670,25 @@ export function getInitialSeed(): DatabaseState {
   };
 }
 
+try {
+  (process as any).loadEnvFile?.('.env');
+} catch { }
+
+const SB_URL = (process.env.SUPABASE_URL || '').trim().replace(/\/(rest|storage|auth)\/v1.*$/, '').replace(/\/+$/, '');
+const SB_KEY = process.env.SUPABASE_SERVICE_KEY || '';
+const SB_BUCKET = process.env.SUPABASE_BUCKET || 'zone-backup';
+const CLOUD_ON = !!(SB_URL && SB_KEY);
+const CLOUD_OBJ = `${SB_URL}/storage/v1/object/${SB_BUCKET}/learntwin_db.json`;
+const CLOUD_HEADERS = { Authorization: `Bearer ${SB_KEY}`, apikey: SB_KEY };
+
 class Store {
   private state: DatabaseState;
+  private cloudTimer: NodeJS.Timeout | null = null;
+  private freshSeed = false;
+  private lastBackupAt: string | null = null;
+  private lastError: string | null = null;
+  private cloudBusy = false;
+  private cloudDirty = false;
 
   constructor() {
     this.state = this.load();
@@ -695,7 +712,13 @@ class Store {
       // fallback to initial seed
     }
     const seed = getInitialSeed();
+    this.freshSeed = true;
     this.save(seed);
+    this.cloudDirty = false;
+    if (this.cloudTimer) {
+      clearTimeout(this.cloudTimer);
+      this.cloudTimer = null;
+    }
     return seed;
   }
 
@@ -707,8 +730,105 @@ class Store {
         fs.mkdirSync(dir, { recursive: true });
       }
       fs.writeFileSync(DATA_FILE, JSON.stringify(toSave, null, 2), 'utf-8');
+      this.scheduleCloudBackup();
     } catch (err) {
       console.error('Error saving state:', err);
+    }
+  }
+
+  private scheduleCloudBackup() {
+    if (!CLOUD_ON) return;
+    this.cloudDirty = true;
+    if (this.cloudTimer) return;
+    this.cloudTimer = setTimeout(() => {
+      this.cloudTimer = null;
+      void this.flushCloud();
+    }, 5000);
+  }
+
+  public async flushCloud() {
+    if (!CLOUD_ON || this.cloudBusy || !this.cloudDirty) return;
+    this.cloudBusy = true;
+    this.cloudDirty = false;
+    try {
+      const res = await fetch(CLOUD_OBJ, {
+        method: 'POST',
+        headers: { ...CLOUD_HEADERS, 'Content-Type': 'application/json', 'x-upsert': 'true' },
+        body: JSON.stringify(this.state),
+      });
+      if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
+      this.lastBackupAt = new Date().toISOString();
+      this.lastError = null;
+    } catch (err) {
+      this.cloudDirty = true;
+      this.lastError = String((err as Error)?.message || err);
+      console.error('Cloud backup failed:', err);
+    } finally {
+      this.cloudBusy = false;
+    }
+  }
+
+  public getCloudStatus() {
+    return {
+      enabled: CLOUD_ON,
+      bucket: SB_BUCKET,
+      lastBackupAt: this.lastBackupAt,
+      lastError: this.lastError,
+      pending: this.cloudDirty || this.cloudBusy,
+    };
+  }
+
+  public async backupNow() {
+    this.cloudDirty = true;
+    if (this.cloudTimer) {
+      clearTimeout(this.cloudTimer);
+      this.cloudTimer = null;
+    }
+    await this.flushCloud();
+    return this.getCloudStatus();
+  }
+
+  public async restoreNow(): Promise<{ ok: boolean; message: string }> {
+    if (!CLOUD_ON) return { ok: false, message: 'Cloud storage not configured' };
+    try {
+      const res = await fetch(CLOUD_OBJ, { headers: CLOUD_HEADERS });
+      if (!res.ok) return { ok: false, message: 'No cloud backup found' };
+      const parsed = (await res.json()) as DatabaseState;
+      if (parsed._seedVersion !== SEED_VERSION) return { ok: false, message: 'Backup version mismatch' };
+      parsed.classrooms ||= [];
+      parsed.classMembers ||= [];
+      parsed.studyFiles ||= [];
+      this.state = parsed;
+      this.freshSeed = false;
+      this.save();
+      this.cloudDirty = false;
+      return { ok: true, message: 'Restored from cloud backup' };
+    } catch (err) {
+      return { ok: false, message: String((err as Error)?.message || err) };
+    }
+  }
+
+  /** Restore from cloud when the local DB file is missing (e.g. fresh/crashed host). */
+  public async restoreFromCloud(): Promise<boolean> {
+    if (!CLOUD_ON || !this.freshSeed) return false;
+    try {
+      const res = await fetch(CLOUD_OBJ, { headers: CLOUD_HEADERS });
+      if (!res.ok) return false;
+      const parsed = (await res.json()) as DatabaseState;
+      if (parsed._seedVersion !== SEED_VERSION) return false;
+      parsed.classrooms ||= [];
+      parsed.classMembers ||= [];
+      parsed.studyFiles ||= [];
+      this.state = parsed;
+      this.freshSeed = false;
+      const dir = path.dirname(DATA_FILE);
+      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+      fs.writeFileSync(DATA_FILE, JSON.stringify(parsed, null, 2), 'utf-8');
+      console.log('State restored from cloud backup');
+      return true;
+    } catch (err) {
+      console.error('Cloud restore failed:', err);
+      return false;
     }
   }
 
