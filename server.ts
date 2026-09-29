@@ -42,7 +42,7 @@ async function startServer() {
   process.on('SIGINT', shutdown);
   process.on('SIGTERM', shutdown);
   const app = express();
-  const PORT = 3000;
+  const PORT = Number(process.env.PORT) || 3000;
 
   // Body parser with 5MB limit for attachments/profiles
   app.use(express.json({ limit: '25mb' }));
