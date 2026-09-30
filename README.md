@@ -130,19 +130,6 @@ The server reads `PORT` from the environment, so it deploys as a single Node web
 
 Use Clerk **production** keys and add your deployed domain in the Clerk dashboard before going live.
 
-## How Google Sign-In Works
-
-1. The user clicks **Continue with Google** and completes OAuth through Clerk.
-2. The frontend sends the Clerk session token to `POST /api/auth/clerk`.
-3. The server verifies the token with Clerk, finds or creates the matching Zone account, and issues a normal Zone session.
-4. New Google users choose their role (Student or Teacher) before continuing to onboarding.
-
-## Roadmap
-
-- Password reset flow
-- Richer intervention automation for teachers
-- Expanded concept library and knowledge graphs per subject
-
 ## License
 
 Add a license of your choice (e.g. MIT) before publishing.
