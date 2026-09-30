@@ -181,14 +181,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </h2>
           <button
             onClick={onNavigatePath}
-            className="text-xs font-bold text-indigo-600 hover:underline"
+            className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-sm shadow-indigo-500/20 transition-all flex items-center gap-1.5 whitespace-nowrap active:scale-95"
           >
-            View Adaptive Path →
+            <span>View Adaptive Path</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {subjects.map((sub, i) => ({ ...sub, color: ['from-indigo-500 to-indigo-600','from-pink-500 to-pink-600','from-emerald-500 to-emerald-600','from-blue-500 to-blue-600'][i % 4], mastery: twin?.subjectMastery?.[sub.id] ?? 0 })).map((sub, idx) => (
+          {subjects.map((sub, i) => ({ ...sub, color: ['from-indigo-500 to-indigo-600', 'from-pink-500 to-pink-600', 'from-emerald-500 to-emerald-600', 'from-blue-500 to-blue-600'][i % 4], mastery: twin?.subjectMastery?.[sub.id] ?? 0 })).map((sub, idx) => (
             <div
               key={idx}
               onClick={onNavigatePath}
@@ -214,7 +215,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
       {/* Active Knowledge Gaps Preview */}
       <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <AlertOctagon className="w-5 h-5 text-rose-500" />
             <h2 className="text-sm font-bold text-slate-900">
@@ -223,9 +224,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
           <button
             onClick={onNavigateGraph}
-            className="text-xs font-bold text-indigo-600 hover:underline"
+            className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-sm shadow-indigo-500/20 transition-all flex items-center gap-1.5 whitespace-nowrap active:scale-95"
           >
-            Explore in Knowledge Graph →
+            <span>Explore in Knowledge Graph</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
 
