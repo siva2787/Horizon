@@ -97,11 +97,11 @@ export const RegisterView: React.FC<RegisterViewProps> = ({
                 id="register-role-student"
                 onClick={() => setRole('STUDENT')}
                 className={`py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all ${role === 'STUDENT'
-                    ? 'bg-white text-indigo-700 shadow-xs border border-slate-200'
-                    : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white text-black shadow-xs border border-slate-200'
+                  : 'text-black hover:text-black'
                   }`}
               >
-                <GraduationCap className="w-4 h-4 text-indigo-600" />
+                <GraduationCap className="w-4 h-4 text-black" />
                 <span>Student Learner</span>
               </button>
               <button
@@ -109,11 +109,11 @@ export const RegisterView: React.FC<RegisterViewProps> = ({
                 id="register-role-teacher"
                 onClick={() => setRole('TEACHER')}
                 className={`py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all ${role === 'TEACHER'
-                    ? 'bg-white text-purple-700 shadow-xs border border-slate-200'
-                    : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white text-black shadow-xs border border-slate-200'
+                  : 'text-black hover:text-black'
                   }`}
               >
-                <School className="w-4 h-4 text-purple-600" />
+                <School className="w-4 h-4 text-black" />
                 <span>Educator / Teacher</span>
               </button>
             </div>
