@@ -3,15 +3,13 @@ import {
   Mail,
   Lock,
   User as UserIcon,
-  ArrowRight,
+  ChevronRight,
   Sparkles,
-  CheckCircle2,
   Eye,
   EyeOff,
-  ArrowLeft,
+  ChevronLeft,
   GraduationCap,
   School,
-  ShieldCheck,
 } from 'lucide-react';
 import { UserRole } from '../../types.ts';
 
@@ -55,12 +53,12 @@ export const RegisterView: React.FC<RegisterViewProps> = ({
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-100/50 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-100/60 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="w-full max-w-4xl bg-white border border-slate-200 rounded-3xl shadow-xl overflow-hidden grid grid-cols-1 md:grid-cols-12 relative z-10">
+      <div className="w-full max-w-5xl bg-white border border-slate-200 rounded-3xl shadow-xl overflow-hidden grid grid-cols-1 md:grid-cols-12 relative z-10">
         {/* Left Form: Registration */}
-        <div className="md:col-span-7 p-8 sm:p-12 flex flex-col justify-between">
+        <div className="md:col-span-7 p-8 sm:p-14 flex flex-col justify-between">
           <div>
             {/* Top Navigation & Brand */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-10">
               <div className="flex items-center gap-2.5">
                 <div className="w-9 h-9 rounded-xl bg-black flex items-center justify-center shadow-md">
                   <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="white" strokeWidth="3.2" strokeLinecap="square" strokeLinejoin="miter">
@@ -77,7 +75,7 @@ export const RegisterView: React.FC<RegisterViewProps> = ({
                   onClick={onBackToLanding}
                   className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-indigo-600 transition-colors px-2.5 py-1.5 rounded-lg hover:bg-slate-100"
                 >
-                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <ChevronLeft className="w-3.5 h-3.5" />
                   <span>Landing</span>
                 </button>
               )}
@@ -91,12 +89,12 @@ export const RegisterView: React.FC<RegisterViewProps> = ({
             </p>
 
             {/* Role Selection Segmented Control */}
-            <div className="mt-5 p-1 bg-slate-100 rounded-2xl border border-slate-200 grid grid-cols-2 gap-1">
+            <div className="mt-7 p-1 bg-slate-100 rounded-2xl border border-slate-200 grid grid-cols-2 gap-1">
               <button
                 type="button"
                 id="register-role-student"
                 onClick={() => setRole('STUDENT')}
-                className={`py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all ${role === 'STUDENT'
+                className={`py-2.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all ${role === 'STUDENT'
                   ? 'bg-white text-black shadow-xs border border-slate-200'
                   : 'text-black hover:text-black'
                   }`}
@@ -108,7 +106,7 @@ export const RegisterView: React.FC<RegisterViewProps> = ({
                 type="button"
                 id="register-role-teacher"
                 onClick={() => setRole('TEACHER')}
-                className={`py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all ${role === 'TEACHER'
+                className={`py-2.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all ${role === 'TEACHER'
                   ? 'bg-white text-black shadow-xs border border-slate-200'
                   : 'text-black hover:text-black'
                   }`}
@@ -118,7 +116,7 @@ export const RegisterView: React.FC<RegisterViewProps> = ({
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="mt-5 space-y-4">
+            <form onSubmit={handleSubmit} className="mt-6 space-y-5">
               {error && (
                 <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700">{error}</div>
               )}
@@ -134,8 +132,9 @@ export const RegisterView: React.FC<RegisterViewProps> = ({
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
-                    placeholder="Your full name"
-                    className="w-full pl-10 pr-4 py-2.5 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 text-slate-900 placeholder-slate-400 transition-all shadow-xs"
+                    placeholder="Enter your full name"
+                    autoComplete="name"
+                    className="w-full pl-10 pr-4 py-3 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 text-slate-900 placeholder-slate-400 transition-all shadow-xs"
                   />
                 </div>
               </div>
@@ -152,8 +151,9 @@ export const RegisterView: React.FC<RegisterViewProps> = ({
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    placeholder="learner@university.edu"
-                    className="w-full pl-10 pr-4 py-2.5 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 text-slate-900 placeholder-slate-400 transition-all shadow-xs"
+                    placeholder="Enter your email address"
+                    autoComplete="email"
+                    className="w-full pl-10 pr-4 py-3 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 text-slate-900 placeholder-slate-400 transition-all shadow-xs"
                   />
                 </div>
               </div>
@@ -170,8 +170,10 @@ export const RegisterView: React.FC<RegisterViewProps> = ({
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    placeholder="At least 8 characters"
-                    className="w-full pl-10 pr-10 py-2.5 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 text-slate-900 placeholder-slate-400 transition-all shadow-xs"
+                    placeholder="Create a password (min. 8 characters)"
+                    autoComplete="new-password"
+                    minLength={8}
+                    className="w-full pl-10 pr-10 py-3 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 text-slate-900 placeholder-slate-400 transition-all shadow-xs"
                   />
                   <button
                     type="button"
@@ -202,28 +204,32 @@ export const RegisterView: React.FC<RegisterViewProps> = ({
                 type="submit"
                 id="register-btn-submit"
                 disabled={loading || !agreeTerms}
-                className="w-full mt-2 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs shadow-md shadow-indigo-600/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                className="w-full mt-3 py-3.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs shadow-md shadow-indigo-600/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
               >
                 <span>{loading ? 'Initializing Profile...' : 'Create Account & Setup Twin'}</span>
-                <ArrowRight className="w-4 h-4" />
+                <ChevronRight className="w-4 h-4" />
               </button>
             </form>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-slate-200 text-center text-xs text-slate-600">
-            Already have an account?{' '}
-            <button
-              onClick={onNavigateLogin}
-              id="register-btn-to-login"
-              className="font-bold text-indigo-600 hover:text-indigo-700 underline underline-offset-2"
-            >
-              Sign In Instead
-            </button>
+          <div className="mt-8 pt-5 border-t border-slate-200">
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-xs text-slate-500">Already have an account?</span>
+              <button
+                type="button"
+                onClick={onNavigateLogin}
+                id="register-btn-to-login"
+                className="inline-flex items-center gap-1 px-4 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-xs font-bold text-slate-800 transition-colors cursor-pointer"
+              >
+                <span>Sign in</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Right Graphic Banner in Clean Professional Light Theme */}
-        <div className="md:col-span-5 bg-gradient-to-br from-purple-50 via-indigo-50/60 to-slate-100 p-8 sm:p-10 text-slate-900 flex flex-col justify-between border-t md:border-t-0 md:border-l border-slate-200 relative overflow-hidden">
+        <div className="md:col-span-5 bg-gradient-to-br from-purple-50 via-indigo-50/60 to-slate-100 p-8 sm:p-12 text-slate-900 flex flex-col justify-between border-t md:border-t-0 md:border-l border-slate-200 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-purple-200/40 rounded-full blur-2xl pointer-events-none" />
 
           <div>
@@ -242,7 +248,18 @@ export const RegisterView: React.FC<RegisterViewProps> = ({
             </p>
           </div>
 
-          <div className="space-y-2 mt-8">
+          <div className="hidden md:flex flex-1 items-center justify-center py-4">
+            <img
+              src="/register-illustration.webp"
+              alt="Student climbing a path toward their goals"
+              width={720}
+              height={720}
+              className="w-full max-w-[340px] aspect-square object-cover rounded-[2rem] bg-white ring-1 ring-white/80 shadow-xl shadow-purple-200/60"
+              draggable={false}
+            />
+          </div>
+
+          <div className="space-y-2">
             <div className="p-3 bg-white rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
               <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs">
                 1

@@ -57,6 +57,7 @@ export default function App() {
   const bridging = useRef(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [classCount, setClassCount] = useState(0);
   const [enrolledSubjects, setEnrolledSubjects] = useState<{ id: string; name: string; color: string }[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -267,6 +268,46 @@ export default function App() {
     setCurrentScreen(s);
   };
 
+  // Swipe gestures for the mobile navigation drawer
+  useEffect(() => {
+    let sx = 0;
+    let sy = 0;
+    let blocked = false;
+    const inHorizontalScroller = (el: EventTarget | null) => {
+      let node = el as HTMLElement | null;
+      while (node && node !== document.body) {
+        const ox = getComputedStyle(node).overflowX;
+        if ((ox === 'auto' || ox === 'scroll') && node.scrollWidth > node.clientWidth) return true;
+        node = node.parentElement;
+      }
+      return false;
+    };
+    const onStart = (e: TouchEvent) => {
+      const t = e.touches[0];
+      sx = t.clientX;
+      sy = t.clientY;
+      blocked = inHorizontalScroller(e.target);
+    };
+    const onEnd = (e: TouchEvent) => {
+      if (window.innerWidth >= 768) return;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - sx;
+      const dy = t.clientY - sy;
+      if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+      if (dx > 0) {
+        if (!blocked && sx < window.innerWidth * 0.5) setMobileNavOpen(true);
+      } else {
+        setMobileNavOpen(false);
+      }
+    };
+    document.addEventListener('touchstart', onStart, { passive: true });
+    document.addEventListener('touchend', onEnd, { passive: true });
+    return () => {
+      document.removeEventListener('touchstart', onStart);
+      document.removeEventListener('touchend', onEnd);
+    };
+  }, []);
+
   if (typeof window !== 'undefined' && window.location.pathname === '/sso-callback') {
     return <AuthenticateWithRedirectCallback signInFallbackRedirectUrl="/" signUpFallbackRedirectUrl="/" />;
   }
@@ -283,6 +324,7 @@ export default function App() {
           onNavigate={navigate}
           onLogout={handleLogout}
           unreadCount={unreadCount}
+          onMenuClick={() => setMobileNavOpen(true)}
         />
       )}
 
@@ -372,6 +414,8 @@ export default function App() {
             activeGapsCount={knowledgeGaps.length}
             unreadNotifications={unreadCount}
             onLogout={handleLogout}
+            mobileOpen={mobileNavOpen}
+            onMobileClose={() => setMobileNavOpen(false)}
           />
 
           <main className="flex-1 p-4 sm:p-6 lg:p-8 min-w-0">
