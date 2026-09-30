@@ -5,7 +5,7 @@
    together. Phones and tablets (under 1024px) stay at normal size. */
 @media (min-width: 1024px) {
   html {
-    font-size: 100%;
+    font-size: 120%;
   }
 }
 
