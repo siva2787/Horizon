@@ -6,6 +6,8 @@ An offline-first, AI-powered learning companion that builds a **digital twin** o
 
 Built for the **YUVA MEGATHON 2026**.
 
+🔗 **Live demo:** <https://zone-v2.onrender.com/>
+
 ---
 
 ## The Problem
