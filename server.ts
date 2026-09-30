@@ -572,6 +572,7 @@ async function startServer() {
           name,
           email: cleanEmail,
           role: 'STUDENT' as const,
+          needsRole: true,
           passwordHash: hashPassword(crypto.randomBytes(24).toString('hex')),
           createdAt: new Date().toISOString(),
         };
@@ -622,6 +623,30 @@ async function startServer() {
 
     endSession(req, res);
     res.json({ success: true, message: 'Profile deleted successfully' });
+  });
+
+  app.post('/api/auth/role', (req, res) => {
+    const state = db.getState();
+    const user: any = state.users.find((u) => u.id === uid(req));
+    if (!user) return res.status(401).json({ success: false, message: 'Not signed in' });
+    if (!user.needsRole) return res.status(403).json({ success: false, message: 'Role already set' });
+    const role = req.body?.role === 'TEACHER' ? ('TEACHER' as const) : ('STUDENT' as const);
+    user.role = role;
+    delete user.needsRole;
+    if (role === 'TEACHER') {
+      state.studentProfiles = state.studentProfiles.filter((p) => p.userId !== user.id);
+      if (!state.teacherProfiles.some((p) => p.userId === user.id)) {
+        state.teacherProfiles.push({
+          id: `prof_${user.id}`,
+          userId: user.id,
+          department: '',
+          title: '',
+          institution: '',
+        } as any);
+      }
+    }
+    db.save();
+    res.json({ success: true, user: publicUser(user) });
   });
 
   app.post('/api/auth/register', (req, res) => {

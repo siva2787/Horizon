@@ -58,6 +58,14 @@
       "role": "STUDENT",
       "passwordHash": "2c152f08c73c53e6521820b892fb8f01:b98dd1f50a2c0936198de44d2cb44f25b8ab9ce5ff9248859890453185debc333513d9f6d90261c5380ea9f28a607619c1a35e126eda8932567312cca64b5b49",
       "createdAt": "2026-09-29T20:13:22.995Z"
+    },
+    {
+      "id": "usr_1790740054008",
+      "name": "siva",
+      "email": "str.strange67@gmail.com",
+      "role": "STUDENT",
+      "passwordHash": "00a8252ddc48c70bb6441ef84ca8e1d4:d597c74382ac386024f971667116405835073e68b362acdfea302e3db776c625c84dc0cd87372212cbbc52357d1236b52579919bfa54afab820e1b0366a2ded9",
+      "createdAt": "2026-09-30T03:47:34.083Z"
     }
   ],
   "studentProfiles": [
@@ -122,6 +130,17 @@
       "department": "AI & Data Science",
       "yearSemester": "3rd Year",
       "college": "AEC",
+      "learningMode": "Visual",
+      "studyConsistency": "Low",
+      "avgSessionMinutes": 0,
+      "learningStreakDays": 0
+    },
+    {
+      "id": "prof_usr_1790740054008",
+      "userId": "usr_1790740054008",
+      "department": "",
+      "yearSemester": "",
+      "college": "",
       "learningMode": "Visual",
       "studyConsistency": "Low",
       "avgSessionMinutes": 0,
@@ -685,7 +704,7 @@
       "subjectMastery": {
         "sub_1790664709917": 11
       },
-      "updatedAt": "2026-09-30T03:26:27.265Z"
+      "updatedAt": "2026-09-30T03:47:02.989Z"
     },
     {
       "id": "twin_usr_1790665764130",
@@ -764,6 +783,20 @@
       "avgAssessmentScore": 0,
       "subjectMastery": {},
       "updatedAt": "2026-09-30T02:15:06.983Z"
+    },
+    {
+      "id": "twin_usr_1790740054008",
+      "studentId": "usr_1790740054008",
+      "overallMastery": 0,
+      "learningMomentum": 0,
+      "retentionHealth": 0,
+      "activeGapsCount": 0,
+      "conceptsMasteredCount": 0,
+      "totalStudyHours": 0,
+      "assessmentsCompletedCount": 0,
+      "avgAssessmentScore": 0,
+      "subjectMastery": {},
+      "updatedAt": "2026-09-30T04:00:54.156Z"
     }
   ],
   "learningTwinConcepts": [
@@ -29950,6 +29983,50 @@
         "ev_1790732117237_xut8u"
       ],
       "timestamp": "2026-09-30T01:35:17.344Z",
+      "teacherOverridden": false
+    },
+    {
+      "id": "dec_1790740054184_a2q8c",
+      "studentId": "usr_1790740054008",
+      "action": "PRACTICE",
+      "targetConceptId": "",
+      "targetConceptName": "No class content",
+      "reason": "Practice No class content: mastery 0% (target 75%).",
+      "decisionFactors": {
+        "mastery": 0,
+        "uncertainty": "High",
+        "prerequisiteReadiness": 100,
+        "recentErrorsCount": 0,
+        "transferPerformance": 50,
+        "forgettingRisk": "Low",
+        "gamingPenalty": 0,
+        "confidenceAverage": 60,
+        "teacherConstraintApplied": false
+      },
+      "evidenceSummary": {
+        "recentAccuracy": 0,
+        "recentErrors": 0,
+        "hintsUsed": 0,
+        "avgResponseTimeMs": 12000,
+        "independentEvidenceCount": 0,
+        "lastPracticedDaysAgo": 0
+      },
+      "prerequisiteChain": [],
+      "candidateActions": [
+        {
+          "action": "PRACTICE",
+          "targetConceptId": "",
+          "targetConceptName": "No class content",
+          "score": 80,
+          "reason": "Practice No class content: mastery 0% (target 75%).",
+          "valid": true
+        }
+      ],
+      "alternatives": [],
+      "confidence": "Low",
+      "decisionVersion": "3.0.0-zone",
+      "inputEvidenceIds": [],
+      "timestamp": "2026-09-30T03:47:34.184Z",
       "teacherOverridden": false
     }
   ],

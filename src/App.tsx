@@ -3,6 +3,7 @@ import { ArrowLeft } from 'lucide-react';
 import { useAuth, useClerk, AuthenticateWithRedirectCallback } from '@clerk/clerk-react';
 import { Navbar } from './components/layout/Navbar.tsx';
 import { Sidebar } from './components/layout/Sidebar.tsx';
+import { RoleSelectView } from './components/layout/RoleSelectView.tsx';
 import { LandingView } from './components/views/LandingView.tsx';
 import { LoginView } from './components/views/LoginView.tsx';
 import { RegisterView } from './components/views/RegisterView.tsx';
@@ -268,6 +269,21 @@ export default function App() {
     setCurrentScreen(s);
   };
 
+  useEffect(() => {
+    const h = document.documentElement;
+    h.style.overflowX = 'hidden';
+    h.style.maxWidth = '100%';
+    document.body.style.overflowX = 'hidden';
+    document.body.style.maxWidth = '100%';
+    let m = document.querySelector('meta[name="viewport"]');
+    if (!m) {
+      m = document.createElement('meta');
+      m.setAttribute('name', 'viewport');
+      document.head.appendChild(m);
+    }
+    m.setAttribute('content', 'width=device-width, initial-scale=1, viewport-fit=cover');
+  }, []);
+
   // Swipe gestures for the mobile navigation drawer
   useEffect(() => {
     let sx = 0;
@@ -294,8 +310,8 @@ export default function App() {
       const dx = t.clientX - sx;
       const dy = t.clientY - sy;
       if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-      if (dx > 0) {
-        if (!blocked && sx < window.innerWidth * 0.5) setMobileNavOpen(true);
+      if (dx < 0) {
+        if (!blocked) setMobileNavOpen(true);
       } else {
         setMobileNavOpen(false);
       }
@@ -312,10 +328,24 @@ export default function App() {
     return <AuthenticateWithRedirectCallback signInFallbackRedirectUrl="/" signUpFallbackRedirectUrl="/" />;
   }
 
+  if (currentUser && (currentUser as any).needsRole) {
+    const pick = async (role: 'STUDENT' | 'TEACHER') => {
+      const res = await fetch('/api/auth/role', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role }),
+      });
+      if (!res.ok) return;
+      await loadInitialData();
+      setCurrentScreen(role === 'TEACHER' ? 'teacher-dashboard' : 'onboarding');
+    };
+    return <RoleSelectView name={currentUser.name} onConfirm={pick} onLogout={handleLogout} />;
+  }
+
   const isFullScreenPage = ['landing', 'login', 'register', 'onboarding', 'diagnostic'].includes(currentScreen);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-slate-50 text-slate-900 flex flex-col selection:bg-indigo-500 selection:text-white">
       {/* Top Navbar: only shown for authenticated/in-app screens */}
       {!isFullScreenPage && (
         <Navbar
@@ -405,7 +435,7 @@ export default function App() {
         </main>
       ) : (
         /* Authenticated App Shell with Sidebar */
-        <div className="flex-1 flex max-w-7xl w-full mx-auto">
+        <div className="flex-1 flex max-w-7xl w-full min-w-0 mx-auto">
           <Sidebar
             currentScreen={currentScreen}
             role={currentUser?.role || 'STUDENT'}
@@ -418,7 +448,7 @@ export default function App() {
             onMobileClose={() => setMobileNavOpen(false)}
           />
 
-          <main className="flex-1 p-4 sm:p-6 lg:p-8 min-w-0">
+          <main className="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 max-w-full overflow-x-hidden">
             {/* Student Screens */}
             {currentScreen === 'dashboard' && (
               <>
