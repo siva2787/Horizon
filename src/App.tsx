@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { ArrowLeft } from 'lucide-react';
+import { useAuth, useClerk, AuthenticateWithRedirectCallback } from '@clerk/clerk-react';
 import { Navbar } from './components/layout/Navbar.tsx';
 import { Sidebar } from './components/layout/Sidebar.tsx';
 import { LandingView } from './components/views/LandingView.tsx';
@@ -27,6 +29,7 @@ import { ParentReportsView } from './components/views/ParentReportsView.tsx';
 import { BackupView } from './components/views/BackupView.tsx';
 import { ClassesView } from './components/views/ClassesView.tsx';
 import { AssistantChat } from './components/AssistantChat.tsx';
+import { ChatLauncher } from './components/ChatLauncher.tsx';
 import { NextActionCard } from './components/NextActionCard.tsx';
 import { ChatView } from './components/views/ChatView.tsx';
 import { ProfileSettingsView } from './components/views/ProfileSettingsView.tsx';
@@ -49,6 +52,10 @@ export default function App() {
       // ignore storage errors (e.g. private browsing)
     }
   };
+  const { signOut } = useClerk();
+  const { isLoaded: clerkLoaded, isSignedIn, getToken } = useAuth();
+  const bridging = useRef(false);
+  const [authError, setAuthError] = useState<string | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [classCount, setClassCount] = useState(0);
   const [enrolledSubjects, setEnrolledSubjects] = useState<{ id: string; name: string; color: string }[]>([]);
@@ -154,6 +161,44 @@ export default function App() {
     return () => clearInterval(t);
   }, [currentUser?.id]);
 
+  // Exchange Clerk (Google) session for a Zone session
+  useEffect(() => {
+    if (!clerkLoaded || !authChecked || currentUser || !isSignedIn || bridging.current) return;
+    bridging.current = true;
+    (async () => {
+      try {
+        const token = await getToken();
+        const res = await fetch('/api/auth/clerk', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Google sign-in failed');
+        await loadInitialData();
+        if (data.user.role === 'TEACHER') {
+          setCurrentScreen('teacher-dashboard');
+        } else if (data.isNew) {
+          setCurrentScreen('onboarding');
+        } else {
+          const mine = await fetch('/api/classes').then((r) => r.json());
+          setCurrentScreen(Array.isArray(mine) && mine.length ? 'dashboard' : 'classes');
+        }
+      } catch (err) {
+        console.error('Google sign-in failed:', err);
+        setAuthError((err as any)?.message || 'Google sign-in failed');
+        setCurrentScreen('login');
+        try {
+          await signOut();
+        } catch {
+          // ignore
+        }
+      } finally {
+        bridging.current = false;
+      }
+    })();
+  }, [clerkLoaded, authChecked, currentUser, isSignedIn]);
+
   // Auth gate: only landing/login/register are reachable without a session
   useEffect(() => {
     if (authChecked && !currentUser && !['landing', 'login', 'register'].includes(currentScreen)) {
@@ -167,6 +212,11 @@ export default function App() {
       await fetch('/api/auth/logout', { method: 'POST' });
     } catch (err) {
       console.error('Logout error:', err);
+    }
+    try {
+      await signOut();
+    } catch {
+      // ignore
     }
     clearSession();
     setCurrentScreen('landing');
@@ -217,6 +267,10 @@ export default function App() {
     setCurrentScreen(s);
   };
 
+  if (typeof window !== 'undefined' && window.location.pathname === '/sso-callback') {
+    return <AuthenticateWithRedirectCallback signInFallbackRedirectUrl="/" signUpFallbackRedirectUrl="/" />;
+  }
+
   const isFullScreenPage = ['landing', 'login', 'register', 'onboarding', 'diagnostic'].includes(currentScreen);
 
   return (
@@ -245,6 +299,7 @@ export default function App() {
 
           {currentScreen === 'login' && (
             <LoginView
+              externalError={authError}
               onLoginSuccess={async (email, password) => {
                 const res = await fetch('/api/auth/login', {
                   method: 'POST',
@@ -355,6 +410,7 @@ export default function App() {
                 onNavigateTutor={(cId) => handleOpenTutorForConcept(cId)}
                 onNavigateGraph={() => setCurrentScreen('knowledge-graph')}
                 onNavigateRetention={() => setCurrentScreen('retention')}
+                onNavigateGoals={() => setCurrentScreen('goals')}
               />
             )}
 
@@ -455,7 +511,17 @@ export default function App() {
             {currentScreen === 'backup' && currentUser?.role === 'TEACHER' && <BackupView />}
 
             {currentScreen === 'messages' && currentUser && (
-              <ChatView meId={currentUser.id} onUnreadChange={setChatUnread} />
+              <>
+                <button
+                  type="button"
+                  onClick={() => setCurrentScreen(currentUser.role === 'TEACHER' ? 'teacher-dashboard' : 'dashboard')}
+                  className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-indigo-600 transition-colors px-2.5 py-1.5 rounded-lg hover:bg-slate-100 cursor-pointer"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <span>Back</span>
+                </button>
+                <ChatView meId={currentUser.id} onUnreadChange={setChatUnread} />
+              </>
             )}
 
             {currentScreen === 'settings' && (
@@ -491,17 +557,11 @@ export default function App() {
         </div>
       )}
       {currentUser && !isFullScreenPage && currentScreen !== 'messages' && (
-        <button
+        <ChatLauncher
+          label={`${currentUser.role === 'TEACHER' ? 'Students' : 'Teachers'} Chat`}
+          unread={chatUnread}
           onClick={() => setCurrentScreen('messages')}
-          className="fixed bottom-6 right-24 z-40 h-12 px-4 rounded-full bg-indigo-600 text-white shadow-lg hover:bg-indigo-700 flex items-center gap-2 text-sm font-semibold"
-        >
-          {currentUser.role === 'TEACHER' ? 'Students' : 'Teachers'} Chat
-          {chatUnread > 0 && (
-            <span className="bg-white text-indigo-700 text-[11px] font-bold rounded-full min-w-5 h-5 px-1.5 flex items-center justify-center">
-              {chatUnread}
-            </span>
-          )}
-        </button>
+        />
       )}
       {currentUser && !isFullScreenPage && (
         <AssistantChat role={currentUser.role === 'TEACHER' ? 'TEACHER' : 'STUDENT'} name={currentUser.name} />

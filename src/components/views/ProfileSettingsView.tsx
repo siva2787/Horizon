@@ -325,8 +325,8 @@ export const ProfileSettingsView: React.FC<ProfileSettingsViewProps> = ({
                   }}
                   title={item.label}
                   className={`p-2 rounded-xl transition-all ${isSelected
-                      ? 'bg-indigo-600 text-white shadow-md scale-110 ring-2 ring-white/50'
-                      : 'bg-white/10 text-indigo-200 hover:bg-white/20'
+                    ? 'bg-indigo-600 text-white shadow-md scale-110 ring-2 ring-white/50'
+                    : 'bg-white/10 text-indigo-200 hover:bg-white/20'
                     }`}
                 >
                   <IconComp className="w-4 h-4" />
@@ -413,8 +413,8 @@ export const ProfileSettingsView: React.FC<ProfileSettingsViewProps> = ({
                 key={mode}
                 onClick={() => setLearningMode(mode)}
                 className={`p-3.5 rounded-2xl border text-center cursor-pointer transition-all ${learningMode === mode
-                    ? 'border-indigo-600 bg-indigo-50/70 text-indigo-950 font-bold shadow-xs'
-                    : 'border-slate-200 bg-slate-50/50 hover:bg-slate-100 text-slate-600 font-semibold'
+                  ? 'border-indigo-600 bg-indigo-50/70 text-indigo-950 font-bold shadow-xs'
+                  : 'border-slate-200 bg-slate-50/50 hover:bg-slate-100 text-slate-600 font-semibold'
                   }`}
               >
                 <div className="text-xs">{mode}</div>
@@ -459,9 +459,9 @@ export const ProfileSettingsView: React.FC<ProfileSettingsViewProps> = ({
           <button
             type="button"
             onClick={() => setShowLogoutModal(true)}
-            className="text-xs font-bold text-rose-600 hover:text-rose-700 hover:underline flex items-center gap-1.5"
+            className="px-5 py-3 bg-white border border-rose-200 text-rose-600 hover:bg-rose-50 hover:border-rose-300 hover:text-rose-700 font-bold text-xs rounded-xl shadow-sm transition-all flex items-center gap-2 cursor-pointer"
           >
-            <LogOut className="w-3.5 h-3.5" />
+            <LogOut className="w-4 h-4" />
             <span>Sign Out</span>
           </button>
 

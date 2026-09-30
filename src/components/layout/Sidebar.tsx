@@ -123,26 +123,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
       </div>
 
-      {/* Mini Twin Status Card in Sidebar */}
-      <div className="mt-6 p-3.5 rounded-2xl bg-gradient-to-br from-indigo-900 via-indigo-950 to-purple-950 text-white shadow-md relative overflow-hidden">
-        <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-indigo-500/20 rounded-full blur-xl pointer-events-none" />
-        <div className="flex items-center gap-2 mb-2">
-          <Sparkles className="w-4 h-4 text-purple-300" />
-          <span className="text-[11px] font-bold text-indigo-100 uppercase tracking-wide">
-            Twin Active Sync
-          </span>
-        </div>
-        <p className="text-[11px] text-indigo-200 leading-relaxed">
-          Continuously modeling mastery, retention, and prerequisite gaps.
-        </p>
-        <button
-          onClick={() => onNavigate('learning-twin')}
-          className="mt-3 w-full py-1.5 px-2.5 bg-white/15 hover:bg-white/25 text-white text-[11px] font-semibold rounded-lg text-center transition-colors border border-white/10"
-        >
-          Inspect Twin Model →
-        </button>
-      </div>
-
       {/* User Session & Logout Footer */}
       <div className="mt-4 pt-3 border-t border-slate-200 flex items-center justify-between">
         <button

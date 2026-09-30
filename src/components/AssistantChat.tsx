@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { MessageCircle, Send, X, Sparkles } from 'lucide-react';
+import { Bot, Send, X, Sparkles } from 'lucide-react';
 
 interface Msg {
     from: 'me' | 'bot';
@@ -19,7 +19,9 @@ export const AssistantChat: React.FC<{ role: 'TEACHER' | 'STUDENT'; name?: strin
         { from: 'bot', text: `Hi${name ? ` ${name.split(' ')[0]}` : ''}! Ask me anything about your ${role === 'TEACHER' ? 'classes and students' : 'learning data'}.` },
     ]);
     const end = useRef<HTMLDivElement>(null);
-    useEffect(() => end.current?.scrollIntoView({ behavior: 'smooth' }), [msgs, open]);
+    useEffect(() => {
+        end.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [msgs, open]);
 
     const send = async (text: string) => {
         const message = text.trim();
@@ -46,9 +48,15 @@ export const AssistantChat: React.FC<{ role: 'TEACHER' | 'STUDENT'; name?: strin
         <div className="fixed bottom-5 right-5 z-50">
             {open && (
                 <div className="mb-3 w-[340px] max-w-[calc(100vw-2.5rem)] h-[480px] bg-white rounded-3xl border border-slate-200 shadow-2xl flex flex-col overflow-hidden">
-                    <div className="px-4 py-3 bg-black text-white flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-sm font-bold">
-                            <Sparkles className="w-4 h-4" /> Zone Assistant
+                    <div className="px-4 py-3 bg-neutral-950 text-white flex items-center justify-between">
+                        <div className="flex items-center gap-2.5">
+                            <span className="w-8 h-8 rounded-full bg-white/10 ring-1 ring-white/15 flex items-center justify-center">
+                                <Bot className="w-4 h-4" />
+                            </span>
+                            <div className="leading-tight">
+                                <div className="text-sm font-bold">Zone AI Assistant</div>
+                                <div className="text-[10px] text-neutral-400 flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-emerald-300" /> Online</div>
+                            </div>
                         </div>
                         <button onClick={() => setOpen(false)} className="p-1 rounded-lg hover:bg-white/10">
                             <X className="w-4 h-4" />
@@ -58,7 +66,7 @@ export const AssistantChat: React.FC<{ role: 'TEACHER' | 'STUDENT'; name?: strin
                         {msgs.map((m, i) => (
                             <div key={i} className={`flex ${m.from === 'me' ? 'justify-end' : 'justify-start'}`}>
                                 <div
-                                    className={`max-w-[85%] whitespace-pre-wrap px-3 py-2 rounded-2xl text-xs leading-relaxed ${m.from === 'me' ? 'bg-black text-white rounded-br-sm' : 'bg-white border border-slate-200 text-slate-800 rounded-bl-sm'
+                                    className={`max-w-[85%] whitespace-pre-wrap px-3 py-2 rounded-2xl text-xs leading-relaxed ${m.from === 'me' ? 'bg-neutral-950 text-white rounded-br-sm' : 'bg-white border border-slate-200 text-slate-800 rounded-bl-sm'
                                         }`}
                                 >
                                     {m.text}
@@ -81,7 +89,7 @@ export const AssistantChat: React.FC<{ role: 'TEACHER' | 'STUDENT'; name?: strin
                     </div>
                     <div className="p-3 flex gap-2 bg-white">
                         <input
-                            className="flex-1 px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                            className="flex-1 px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-900"
                             placeholder="Ask about your data…"
                             value={input}
                             maxLength={500}
@@ -91,20 +99,32 @@ export const AssistantChat: React.FC<{ role: 'TEACHER' | 'STUDENT'; name?: strin
                         <button
                             onClick={() => send(input)}
                             disabled={busy || !input.trim()}
-                            className="p-2.5 rounded-xl bg-black text-white disabled:opacity-50"
+                            className="p-2.5 rounded-xl bg-neutral-950 text-white hover:bg-neutral-800 disabled:opacity-50"
                         >
                             <Send className="w-3.5 h-3.5" />
                         </button>
                     </div>
                 </div>
             )}
-            <button
-                onClick={() => setOpen(!open)}
-                className="w-14 h-14 rounded-full bg-black text-white shadow-xl flex items-center justify-center hover:bg-neutral-800 ml-auto"
-                aria-label="Open assistant"
-            >
-                {open ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
-            </button>
+            <div className="group ml-auto w-14">
+                {!open && (
+                    <span className="pointer-events-none absolute bottom-full right-0 mb-2 whitespace-nowrap rounded-lg bg-neutral-950 px-2.5 py-1 text-[11px] font-semibold text-white opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100">
+                        AI Assistant
+                    </span>
+                )}
+                <button
+                    onClick={() => setOpen(!open)}
+                    className="relative w-14 h-14 rounded-full bg-gradient-to-br from-neutral-800 to-black text-white shadow-[0_10px_30px_-8px_rgba(0,0,0,0.6)] ring-4 ring-black/10 flex items-center justify-center hover:from-neutral-700 hover:to-neutral-900"
+                    aria-label={open ? 'Close AI assistant' : 'Open AI assistant'}
+                >
+                    {open ? <X className="w-6 h-6" /> : <Bot className="w-6 h-6" />}
+                    {!open && (
+                        <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-white text-neutral-950 ring-2 ring-neutral-950">
+                            <Sparkles className="h-3 w-3" />
+                        </span>
+                    )}
+                </button>
+            </div>
         </div>
     );
 };

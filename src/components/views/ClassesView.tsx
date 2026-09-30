@@ -252,9 +252,11 @@ export const ClassesView: React.FC<Props> = ({ role, onChanged, onStartDiagnosti
                         <a
                           key={f.id}
                           href={`/api/files/${f.id}?sid=${sessionStorage.getItem('zone_sid') || ''}`}
-                          className="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/40 text-xs font-semibold text-slate-700 transition-all"
+                          className="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 hover:border-neutral-950 hover:bg-neutral-50 text-xs font-semibold text-slate-800 transition-all"
                         >
-                          <Download className="w-4 h-4 text-indigo-500 shrink-0" />
+                          <span className="w-8 h-8 rounded-lg bg-neutral-950 text-white flex items-center justify-center shrink-0">
+                            <Download className="w-4 h-4" />
+                          </span>
                           <span className="truncate">{f.name}</span>
                         </a>
                       ))}

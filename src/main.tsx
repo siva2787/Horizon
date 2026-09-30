@@ -1,5 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { ClerkProvider } from '@clerk/clerk-react';
 import App from './App.tsx';
 import './index.css';
 
@@ -13,7 +14,7 @@ window.fetch = async (input: RequestInfo | URL, init: RequestInit = {}) => {
   const t = sessionStorage.getItem(TOKEN_KEY);
   if (t) headers.set('x-zone-sid', t);
   const res = await nativeFetch(input, { ...init, headers });
-  if (url.startsWith('/api/auth/login') || url.startsWith('/api/auth/register')) {
+  if (url.startsWith('/api/auth/login') || url.startsWith('/api/auth/register') || url.startsWith('/api/auth/clerk')) {
     const data = await res.clone().json().catch(() => null);
     if (data?.token) sessionStorage.setItem(TOKEN_KEY, data.token);
   }
@@ -23,6 +24,8 @@ window.fetch = async (input: RequestInfo | URL, init: RequestInit = {}) => {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <ClerkProvider publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY} afterSignOutUrl="/">
+      <App />
+    </ClerkProvider>
   </StrictMode>,
 );

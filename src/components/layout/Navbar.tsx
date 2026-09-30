@@ -111,7 +111,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               }}
               className="flex items-center gap-2 pl-2 border-l border-slate-200 cursor-pointer group select-none"
             >
-              <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-indigo-500/20 group-hover:ring-indigo-500 transition-all">
+              <div className="w-9 h-9 rounded-full overflow-hidden ring-2 ring-black/10 group-hover:ring-black shadow-sm transition-all">
                 {user?.avatarUrl ? (
                   <img
                     src={user.avatarUrl}
@@ -120,7 +120,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     referrerPolicy="no-referrer"
                   />
                 ) : (
-                  <div className="w-full h-full bg-indigo-600 text-white text-xs font-bold flex items-center justify-center">
+                  <div className="w-full h-full bg-gradient-to-br from-neutral-700 to-black text-white text-sm font-bold flex items-center justify-center">
                     {(user?.name || '?').charAt(0).toUpperCase()}
                   </div>
                 )}
@@ -144,7 +144,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <div className="px-3 py-2 border-b border-slate-100 mb-1">
                   <div className="text-xs font-bold text-slate-800">{user?.name || ''}</div>
                   <div className="text-[10px] text-slate-500 truncate">{user?.email || ''}</div>
-                  <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-100">
+                  <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-neutral-100 text-neutral-800 border border-neutral-200">
                     {user?.role === 'TEACHER' ? 'Instructor Portal' : 'Student Learner'}
                   </span>
                 </div>

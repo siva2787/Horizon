@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Target,
   CheckCircle2,
@@ -119,9 +120,8 @@ export const LearningGoalsView: React.FC = () => {
                     <div className="flex items-center justify-between text-xs font-semibold">
                       <div className="flex items-center gap-2">
                         <CheckCircle2
-                          className={`w-4 h-4 ${
-                            m.progress === 100 ? 'text-emerald-500' : 'text-slate-400'
-                          }`}
+                          className={`w-4 h-4 ${m.progress === 100 ? 'text-emerald-500' : 'text-slate-400'
+                            }`}
                         />
                         <span className="text-slate-800 font-bold">{m.skill}</span>
                       </div>
@@ -130,9 +130,8 @@ export const LearningGoalsView: React.FC = () => {
 
                     <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
                       <div
-                        className={`h-full rounded-full ${
-                          m.progress === 100 ? 'bg-emerald-500' : 'bg-indigo-600'
-                        }`}
+                        className={`h-full rounded-full ${m.progress === 100 ? 'bg-emerald-500' : 'bg-indigo-600'
+                          }`}
                         style={{ width: `${m.progress}%` }}
                       />
                     </div>
@@ -145,9 +144,9 @@ export const LearningGoalsView: React.FC = () => {
       </div>
 
       {/* Add Goal Modal */}
-      {showAddModal && (
-        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full border border-slate-200 shadow-2xl space-y-5 animate-in fade-in zoom-in-95">
+      {showAddModal && createPortal(
+        <div className="fixed inset-0 z-[200] bg-slate-900/40 flex items-center justify-center p-4" onClick={() => setShowAddModal(false)}>
+          <div onClick={(e) => e.stopPropagation()} className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full border border-slate-200 shadow-2xl space-y-5">
             <h3 className="text-lg font-bold text-slate-900">Add New Goal</h3>
             <form onSubmit={handleAddGoal} className="space-y-4">
               <div>
@@ -161,6 +160,7 @@ export const LearningGoalsView: React.FC = () => {
                   placeholder="e.g. Master Deep Learning & Transformers"
                   className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-800"
                   required
+                  autoFocus
                 />
               </div>
 
@@ -181,7 +181,8 @@ export const LearningGoalsView: React.FC = () => {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

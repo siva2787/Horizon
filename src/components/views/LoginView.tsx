@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSignIn } from '@clerk/clerk-react';
 import {
   Mail,
   Lock,
@@ -8,29 +9,45 @@ import {
   Eye,
   EyeOff,
   ArrowLeft,
-  UserCheck,
-  GraduationCap,
-  ShieldCheck,
 } from 'lucide-react';
 
 interface LoginViewProps {
   onLoginSuccess: (email: string, password: string) => Promise<void>;
   onNavigateRegister: () => void;
   onBackToLanding?: () => void;
+  externalError?: string | null;
 }
+
+const SSO_CALLBACK_PATH = '/sso-callback';
+
+const GoogleIcon: React.FC = () => (
+  <svg viewBox="0 0 24 24" className="w-4 h-4" aria-hidden="true">
+    <path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z" />
+    <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09C3.26 21.3 7.31 24 12 24z" />
+    <path fill="#FBBC05" d="M5.27 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62H1.29A11.99 11.99 0 0 0 0 12c0 1.94.46 3.77 1.29 5.38l3.98-3.09z" />
+    <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.98 3.09C6.22 6.86 8.87 4.75 12 4.75z" />
+  </svg>
+);
 
 export const LoginView: React.FC<LoginViewProps> = ({
   onLoginSuccess,
   onNavigateRegister,
   onBackToLanding,
+  externalError,
 }) => {
+  const { signIn, isLoaded } = useSignIn();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [infoMessage, setInfoMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (externalError) setError(externalError);
+  }, [externalError]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,17 +62,30 @@ export const LoginView: React.FC<LoginViewProps> = ({
     }
   };
 
+  const handleGoogle = async () => {
+    if (!isLoaded || !signIn) return;
+    setError(null);
+    setGoogleLoading(true);
+    try {
+      await signIn.authenticateWithRedirect({
+        strategy: 'oauth_google',
+        redirectUrl: SSO_CALLBACK_PATH,
+        redirectUrlComplete: '/',
+      });
+    } catch (err: any) {
+      setError(err?.errors?.[0]?.longMessage || err?.message || 'Google sign-in failed');
+      setGoogleLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 bg-slate-50 text-slate-900 relative overflow-hidden">
-      {/* Background ambient soft pastel tints */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-100/60 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-100/50 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="w-full max-w-4xl bg-white border border-slate-200 rounded-3xl shadow-xl overflow-hidden grid grid-cols-1 md:grid-cols-12 relative z-10">
-        {/* Left Form: Sign In */}
         <div className="md:col-span-7 p-8 sm:p-12 flex flex-col justify-between">
           <div>
-            {/* Top Navigation & Brand */}
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-2.5">
                 <div className="w-9 h-9 rounded-xl bg-black flex items-center justify-center shadow-md">
@@ -104,7 +134,28 @@ export const LoginView: React.FC<LoginViewProps> = ({
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            <div className="mt-6">
+              <button
+                type="button"
+                id="login-btn-google"
+                onClick={handleGoogle}
+                disabled={googleLoading || !isLoaded}
+                className="w-full py-2.5 px-4 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-800 font-bold text-xs shadow-xs transition-all flex items-center justify-center gap-2.5 disabled:opacity-50 cursor-pointer"
+              >
+                <GoogleIcon />
+                <span>{googleLoading ? 'Redirecting to Google...' : 'Continue with Google'}</span>
+              </button>
+
+              <div className="flex items-center gap-3 mt-5">
+                <div className="flex-1 h-px bg-slate-200" />
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  or sign in with email
+                </span>
+                <div className="flex-1 h-px bg-slate-200" />
+              </div>
+            </div>
+
+            <form onSubmit={handleSubmit} className="mt-5 space-y-4">
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1.5">
                   Email Address
@@ -193,7 +244,6 @@ export const LoginView: React.FC<LoginViewProps> = ({
           </div>
         </div>
 
-        {/* Right Graphic Banner in Clean Professional Light Theme */}
         <div className="md:col-span-5 bg-gradient-to-br from-indigo-50 via-purple-50/60 to-slate-100 p-8 sm:p-10 text-slate-900 flex flex-col justify-between border-t md:border-t-0 md:border-l border-slate-200 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-200/40 rounded-full blur-2xl pointer-events-none" />
 

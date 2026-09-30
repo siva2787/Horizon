@@ -1,4 +1,5 @@
 import express from 'express';
+import { verifyToken, createClerkClient } from '@clerk/backend';
 import path from 'path';
 import crypto from 'crypto';
 import { createServer as createViteServer } from 'vite';
@@ -540,6 +541,67 @@ async function startServer() {
     }
     const token = startSession(res, user.id);
     res.json({ success: true, token, user: publicUser(user) });
+  });
+
+  app.post('/api/auth/clerk', async (req, res) => {
+    try {
+      const secretKey = process.env.CLERK_SECRET_KEY;
+      if (!secretKey) return res.status(500).json({ success: false, message: 'Clerk is not configured on the server' });
+      const jwt = String(req.body?.token || '');
+      if (!jwt) return res.status(400).json({ success: false, message: 'Missing token' });
+      const vr: any = await verifyToken(jwt, { secretKey });
+      if (vr?.errors?.length) throw new Error(vr.errors[0]?.message || 'Token verification failed');
+      const payload: any = vr?.data ?? vr;
+      const cu = await createClerkClient({ secretKey }).users.getUser(payload.sub);
+      const primary = cu.emailAddresses.find((e) => e.id === cu.primaryEmailAddressId) || cu.emailAddresses[0];
+      if (!primary || primary.verification?.status !== 'verified') {
+        return res.status(403).json({ success: false, message: 'A verified email is required' });
+      }
+      const cleanEmail = primary.emailAddress.trim();
+      const state = db.getState();
+      let user: any = state.users.find((u) => u.email.toLowerCase() === cleanEmail.toLowerCase());
+      let isNew = false;
+      let profile: any;
+      if (!user) {
+        isNew = true;
+        const newId = `usr_${Date.now()}`;
+        const name =
+          [cu.firstName, cu.lastName].filter(Boolean).join(' ').trim() || cleanEmail.split('@')[0];
+        user = {
+          id: newId,
+          name,
+          email: cleanEmail,
+          role: 'STUDENT' as const,
+          passwordHash: hashPassword(crypto.randomBytes(24).toString('hex')),
+          createdAt: new Date().toISOString(),
+        };
+        state.users.push(user);
+        profile = {
+          id: `prof_${newId}`,
+          userId: newId,
+          department: '',
+          yearSemester: '',
+          college: '',
+          learningMode: 'Visual' as const,
+          studyConsistency: 'Low' as const,
+          avgSessionMinutes: 0,
+          learningStreakDays: 0,
+        };
+        state.studentProfiles.push(profile);
+        updateTwinMastery(newId);
+        db.save();
+      } else {
+        profile =
+          user.role === 'STUDENT'
+            ? state.studentProfiles.find((p) => p.userId === user.id)
+            : state.teacherProfiles.find((p) => p.userId === user.id);
+      }
+      const token = startSession(res, user.id);
+      res.json({ success: true, token, isNew, user: publicUser(user), profile });
+    } catch (err: any) {
+      console.error('Clerk auth failed:', err?.message || err);
+      res.status(401).json({ success: false, message: `Google sign-in failed: ${err?.message || 'verification error'}` });
+    }
   });
 
   app.post('/api/auth/logout', (req, res) => {

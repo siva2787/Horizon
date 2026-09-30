@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+/* Scale the whole UI up on desktop so 100% browser zoom looks like 125%.
+   Tailwind sizes everything in rem, so this scales text, spacing and icons
+   together. Phones and tablets (under 1024px) stay at normal size. */
+@media (min-width: 1024px) {
+  html {
+    font-size: 100%;
+  }
+}
+
 @layer base {
 
   html,
